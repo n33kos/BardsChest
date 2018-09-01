@@ -1,5 +1,5 @@
 export default class {
-  constructor() {
+  constructor(UI) {
     this.bpm = 120;
     this.currentLevel = 0;
     this.difficulty = 1;
