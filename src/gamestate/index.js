@@ -5,5 +5,6 @@ export default class {
     this.difficulty = 1;
     this.playerName = 'Player';
     this.score = 0;
+    this.screen = 'mainmenu';
   }
 }

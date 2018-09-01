@@ -1,0 +1,18 @@
+body {
+  background-color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+.Screen {
+  height: 100v%;
+  opacity: 0;
+  transform: translateX(-100%);
+  transition: opacity 1s ease, transform 1s ease;
+  width: 100%;
+}
+
+.Screen.active {
+  opacity: 1;
+  transform: translateX(0);
+}

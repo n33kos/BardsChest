@@ -9,16 +9,72 @@
     <meta name="description" content="A Web Audio API game made for the 2018 itch.io music jam">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="./styles/styles.css">
 
-    <script src="./heartstring.min.js"></script>
+    <script src="./js/heartstring.min.js"></script>
+    <script src="./js/index.js"></script>
   </head>
 
   <body>
-  </body>
+    <div class="UserInterface">
+      <div class="Screen" data-screen="mainmenu">
+        <img src="/img/logo.png" class="logo">
+        <nav>
+          <button data-nav="play">Play</button>
+          <button data-nav="settings">Settings</button>
+          <button data-nav="about">About</button>
+          <button data-nav="quit">Quit</button>
+        </nav>
+      </div>
 
-  <script>
-    const GameState = new HEART.GameState();
-    console.log(GameState);
-  </script>
+      <div class="Screen" data-screen="level">
+        <nav>
+          <div>
+            Select Level:
+            <button data-nav-level="1">Level 1</button>
+            <button data-nav-level="2">Level 2</button>
+            <button data-nav-level="3">Level 3</button>
+          </div>
+          <div>
+            Select Difficulty:
+            <button data-nav-difficulty="1">Easy</button>
+            <button data-nav-difficulty="2">Medium</button>
+            <button data-nav-difficulty="3">hard</button>
+          </div>
+          <button data-nav="play">Play</button>
+          <button data-nav="back">Back</button>
+        </nav>
+      </div>
+
+      <div class="Screen" data-screen="about">
+        <div class="Disclaimer">
+          Words are in my not so humble opinion our most inexhaustible source of magic capable of both influencing injury and remedying it Of course it is happening inside your head Harry but why on earth should that mean it is not real The wand chooses the wizard, Give her hell from us Peeves Severus Snape Words are in my not so humble opinion our most inexhaustible source of magic capable of both influencing injury and remedying it I am what.
+        </div>
+        <nav>
+          <button data-nav="back">Back</button>
+        </nav>
+      </div>
+
+      <div class="Screen" data-screen="game">
+        <div class="PlayerName"><span data-ui="playerName">Player</span></div>
+        <div class="Score">Score: <span data-ui="score">0</span></div>
+        <div class="Level">Level: <span data-ui="level">1</span></div>
+        <nav>
+          <button data-nav="pause">Pause</button>
+          <button data-nav="restart">restart</button>
+        </nav>
+      </div>
+
+      <div class="Screen" data-screen="score">
+        <div class="Disclaimer">
+          Words are in my not so humble opinion our most inexhaustible source of magic capable of both influencing injury and remedying it Of course it is happening inside your head Harry but why on earth should that mean it is not real The wand chooses the wizard, Give her hell from us Peeves Severus Snape Words are in my not so humble opinion our most inexhaustible source of magic capable of both influencing injury and remedying it I am what.
+        </div>
+        <nav>
+          <button data-nav="next">Next Level</button>
+          <button data-nav="back">Main Menu</button>
+          <button data-nav="restart">Restart</button>
+        </nav>
+      </div>
+    </div>
+  </body>
 </html>
