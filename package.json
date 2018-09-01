@@ -1,0 +1,23 @@
+{
+  "name": "heartstring",
+  "version": "0.0.1",
+  "description": "A Web Audio API game made for the 2018 itch.io music jam",
+  "main": "dist/heartstring.min.js",
+  "scripts": {
+    "build": "webpack",
+    "serve": "http-server"
+  },
+  "author": "n33kos",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.4",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-preset-es2015": "^6.24.1",
+    "http-server": "^0.11.1",
+    "webpack": "^4.12.0",
+    "webpack-cli": "^3.0.3"
+  },
+  "dependencies": {}
+}
