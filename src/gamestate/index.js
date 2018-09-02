@@ -1,10 +1,8 @@
 export default class {
-  constructor(UI) {
-    this.bpm = 120;
-    this.currentLevel = 0;
+  constructor() {
     this.difficulty = 1;
-    this.playerName = 'Player';
+    this.level = null;
+    this.playerName = 'neek';
     this.score = 0;
-    this.screen = 'mainmenu';
   }
 }
