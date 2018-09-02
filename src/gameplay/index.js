@@ -4,6 +4,31 @@ export default class {
   constructor(GameState) {
     this.GameState = GameState;
 
+    this.audioContext = null;
+    this.canvas = null;
+    this.ctx = null;
+    this.isMouseDown = false;
+    this.level = null;
+    this.masterAudioNode = null;
+    this.oldMousePos = 0;
+    this.rotation = 0;
+    this.isPaused = false;
+  }
+
+  play() {
+    this.initCanvas();
+    this.initAudio();
+    this.initControls();
+    this.loadLevel();
+    this.render()
+  }
+
+  togglePause() {
+    this.isPaused ? this.audioContext.resume() : this.audioContext.suspend();
+    this.isPaused = !this.isPaused;
+  }
+
+  initCanvas() {
     let canvas = document.querySelector('canvas');
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -13,30 +38,25 @@ export default class {
     this.cy = ctx.canvas.height/2;
     this.canvas = canvas;
     this.ctx = ctx;
+  }
 
-    this.rotation = 0;
-    this.oldMousePos = 0;
-    this.isMouseDown = false;
-
-    // Set Up Audio
-    const audioContext = new AudioContext();
+  initAudio() {
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
     this.audioContext = audioContext;
 
     const master = audioContext.createGain();
     master.gain.value = 0.75;
     master.connect(audioContext.destination);
     this.masterAudioNode = master;
-
-    // TODO: make this select each level
-    this.level = new Level({
-      audioContext,
-      masterAudioNode : master,
-    });
   }
 
-  init() {
-    this.initControls();
-    this.initInterval();
+  loadLevel() {
+    this.level = new Level({
+      audioContext    : this.audioContext,
+      backgroundTrack : [{ beats : 4, url : 'metronome-100-bpm.ogg' }],
+      masterAudioNode : this.masterAudioNode,
+    });
+    this.level.start();
   }
 
   initControls() {
@@ -48,35 +68,15 @@ export default class {
     document.body.addEventListener("mouseup", e => { this.isMouseDown = false; });
   }
 
-  initInterval() {
-    this.level.noteTriggers.forEach(trigger => {
-      setTimeout(() => { trigger.start(); }, trigger.startDelay);
-    });
-  }
-
   handleMouseMove(e) {
-    if (!this.isMouseDown) return;
+    if (!this.isMouseDown || this.isPaused) return;
 
     // Set rotation from mouse movement
     this.rotation += (this.oldMousePos - e.clientX) * 0.01;
     if (this.rotation > Math.PI*2) this.rotation = this.rotation % (Math.PI * 2);
     this.oldMousePos = e.clientX;
 
-    // Set the correct note to the correct trigger
-    this.level.noteTriggers.forEach(trigger => {
-      trigger.note = this.getNoteForPosition(trigger.position);
-    });
-  }
-
-  getNoteForPosition(position) {
-    const noteSectionLength = (Math.PI * 2 / this.level.notes.length);
-    let index = Math.floor((position + this.rotation) / noteSectionLength);
-
-    // I think there is a smarter way to do this without a damned while loop
-    while (index < 0) { index = this.level.notes.length + index; }
-    if (index > this.level.notes.length) index = Math.floor(index % this.level.notes.length);
-
-    return this.level.notes[Math.abs(index)];
+    if (this.level !== null) this.level.setNotesForTriggers(this.rotation);
   }
 
   drawNotes() {
@@ -104,9 +104,11 @@ export default class {
   }
 
   render() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.drawNotes();
-    this.drawNoteTriggers();
+    if(!this.isPaused) {
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      this.drawNotes();
+      this.drawNoteTriggers();
+    }
 
     window.requestAnimationFrame(this.render.bind(this));
   }

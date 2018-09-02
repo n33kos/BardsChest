@@ -15,6 +15,10 @@ export default class {
     oscillator.type = 'square';
     oscillator.frequency.setValueAtTime(this.frequency, audioContext.currentTime);
     oscillator.start();
-    return oscillator;
+
+    const gain = audioContext.createGain();
+    gain.gain.value = 0.05;
+
+    return oscillator.connect(gain);
   }
 }

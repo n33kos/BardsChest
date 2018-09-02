@@ -17,15 +17,21 @@ export default class {
   }
 
   start() {
-    setInterval(() => {
-      if (this.note === null) return;
+    // Play once
+    this.noteOnOff();
 
-      // clone note object so we can stop it even it it gets unset before the stop call
-      const noteToPlay = Object.assign({}, this.note);
-      this.playNote(noteToPlay);
+    // Set replay interval
+    setInterval(() => { this.noteOnOff() }, this.triggerInterval);
+  }
 
-      setTimeout(() => { this.stopNote(noteToPlay); }, this.noteDuration);
-    }, this.triggerInterval);
+  noteOnOff() {
+    if (this.note === null) return;
+
+    // clone note object so we can stop it even it it gets unset before the stop call
+    const noteToPlay = Object.assign({}, this.note);
+    this.playNote(noteToPlay);
+
+    setTimeout(() => { this.stopNote(noteToPlay); }, this.noteDuration);
   }
 
   playNote(note) {
