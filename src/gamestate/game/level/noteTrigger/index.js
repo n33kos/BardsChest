@@ -1,30 +1,23 @@
 export default class {
   constructor({
-    color = 'white',
     masterAudioNode,
     noteDuration = 100,
     position = 0, // position around the circle in radians
-    startDelay = 0,
-    triggerInterval = 250, // milliseconds
+    startDelay = 0, // how many beats to delay start
+    beats = 1, // how many beats before repeating
   }) {
-    this.color = color;
     this.masterAudioNode = masterAudioNode;
     this.note = null;
     this.noteDuration = noteDuration;
-    this.position = position;
     this.startDelay = startDelay;
-    this.triggerInterval = triggerInterval;
+    this.beats = beats;
+    this.beatCounter = beats - startDelay; // delay start by subtracting
+    this.nextNote = null;
+    this.startTime = null;
+    this.position = position;
   }
 
-  start() {
-    // Play once
-    this.noteOnOff();
-
-    // Set replay interval
-    setInterval(() => { this.noteOnOff() }, this.triggerInterval);
-  }
-
-  noteOnOff() {
+  fire() {
     if (this.note === null) return;
 
     // clone note object so we can stop it even it it gets unset before the stop call
@@ -35,12 +28,10 @@ export default class {
   }
 
   playNote(note) {
-    this.color = 'red';
     note.audioNode.connect(this.masterAudioNode);
   }
 
   stopNote(note) {
-    this.color = 'white';
     note.audioNode.disconnect(this.masterAudioNode);
   }
 }

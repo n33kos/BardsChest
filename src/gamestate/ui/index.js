@@ -24,12 +24,12 @@ export default class {
   initListenters() {
     // Play buttons
     Array.from(this.buttons.play).forEach(button => {
-      button.addEventListener('click', () => this.GameState.GamePlay.play() );
+      button.addEventListener('click', () => this.GameState.Game.play() );
     });
 
     // Pause buttons
     Array.from(this.buttons.pause).forEach(button => {
-      button.addEventListener('click', () => this.GameState.GamePlay.togglePause() );
+      button.addEventListener('click', () => this.GameState.Game.togglePause() );
     });
 
     // Quit buttons
@@ -40,7 +40,9 @@ export default class {
     // Mute Buttons
     Array.from(this.buttons.mute).forEach(button => {
       button.addEventListener('click', (e) => {
-        const audioCtx = this.GameState.GamePlay.audioContext;
+
+        const audioCtx = this.GameState.Game.audioContext;
+
         if(audioCtx.state === 'running') {
           audioCtx.suspend().then(function() {
             e.target.innerHTML = 'Resume';
@@ -73,15 +75,19 @@ export default class {
     });
   }
 
-  updateScore() {
-    document.querySelector('[data-ui="score"]').innerHTML = this.GameState.score;
+  updateScore(score) {
+    document.querySelector('[data-ui="score"]').innerHTML = score;
   }
 
   updatePlayerName() {
     document.querySelector('[data-ui="playerName"]').innerHTML = this.GameState.playerName;
   }
 
-  updateLevel() {
-    document.querySelector('[data-ui="level"]').innerHTML = this.GameState.level;
+  updateLevel(level) {
+    document.querySelector('[data-ui="level"]').innerHTML = level;
+  }
+
+  updateBPM(bpm) {
+    document.querySelector('[data-ui="bpm"]').innerHTML = bpm;
   }
 }

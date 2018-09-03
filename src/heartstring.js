@@ -1,13 +1,21 @@
-import GamePlay  from './gameplay/index';
+import Game      from './gamestate/game/index';
 import GameState from './gamestate/index';
-import Level     from './level/index';
-import Note      from './Note/index';
-import UI        from './ui/index';
+import UI        from './gamestate/ui/index';
 
-window.HEART = {
-  GamePlay,
+const HEART = {
   GameState,
-  Level,
-  Note,
+  Game,
   UI,
 };
+
+const initGame = () => {
+  const GameState = new HEART.GameState();
+  GameState.Game = new HEART.Game(GameState);
+  GameState.UI = new HEART.UI(GameState);
+
+  GameState.UI.init();
+}
+
+document.addEventListener("DOMContentLoaded", function(event) {
+  initGame();
+});
