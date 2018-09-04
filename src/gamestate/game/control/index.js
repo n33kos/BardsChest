@@ -3,6 +3,7 @@ export default class {
     this.Game = Game;
     this.isMouseDown = false;
     this.oldMousePos = 0;
+    this.direction = 1;
   }
 
   init() {
@@ -10,6 +11,7 @@ export default class {
     document.body.addEventListener("mousedown", e => {
       this.isMouseDown = true;
       this.oldMousePos = e.clientX;
+      this.direction = e.clientY > this.Game.ctx.canvas.height/2 ? -1 : 1;
     });
     document.body.addEventListener("mouseup", e => { this.isMouseDown = false; });
     document.onkeydown = this.handleKeypress.bind(this);
@@ -18,9 +20,7 @@ export default class {
   handleMouseMove(e) {
     if (!this.isMouseDown || this.Game.isPaused) return;
 
-    const direction = e.clientY > this.Game.ctx.canvas.height/2 ? -1 : 1;
-
-    this.Game.momentum += (this.oldMousePos - e.clientX) * direction * this.Game.deltaTime;
+    this.Game.momentum += (this.oldMousePos - e.clientX) * this.direction * this.Game.deltaTime;
     this.oldMousePos = e.clientX;
   }
 

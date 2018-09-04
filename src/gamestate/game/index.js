@@ -37,6 +37,15 @@ export default class {
     this.loadLevel();
   }
 
+  restart() {
+    this.level = null;
+    this.levelProgress = 0;
+    this.momentum = 0;
+    this.rotation = 0;
+    this.sectionProgress = 0;
+    this.loadLevel();
+  }
+
   togglePause() {
     this.isPaused ? this.audioContext.resume() : this.audioContext.suspend();
     this.isPaused = !this.isPaused;
@@ -45,6 +54,13 @@ export default class {
   getAudioRenderFrequency() {
     if (this.level === null) return 500;
     return oneBeatInMilliseconds(this.level.bpm);
+  }
+
+  resizeCanvas(canvas) {
+    this.canvas.width = window.innerWidth;
+  	this.canvas.height = window.innerHeight;
+    this.cx = this.ctx.canvas.width/2;
+    this.cy = this.ctx.canvas.height/2;
   }
 
   loopValue(val, min, max) {
@@ -93,6 +109,10 @@ export default class {
     this.cy = ctx.canvas.height/2;
     this.canvas = canvas;
     this.ctx = ctx;
+
+    window.addEventListener('resize', () => {
+      this.resizeCanvas();
+    });
   }
 
   initAudio() {
@@ -204,7 +224,7 @@ export default class {
           //   trigger.nextNote = null;
           // });
 
-          this.GameState.score -= Math.max(0, 8);
+          this.GameState.score = Math.max(0, this.GameState.score-8);
         }
 
         if (trigger.nextNote !== null && trigger.note === trigger.nextNote) {

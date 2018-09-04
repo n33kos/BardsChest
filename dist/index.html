@@ -61,7 +61,7 @@
         <div class="BPM">BPM: <span data-ui="bpm">100</span></div>
         <nav>
           <button data-nav="pause" data-gamestate-pause>Pause</button>
-          <button data-nav="restart" data-target-screen="level" data-gamestate-pause>restart</button>
+          <button data-nav="restart" data-gamestate-restart>restart</button>
         </nav>
       </div>
 
@@ -72,11 +72,12 @@
         <nav>
           <button data-nav="next">Next Level</button>
           <button data-nav="back">Main Menu</button>
-          <button data-nav="restart">Restart</button>
+          <button data-nav="restart" data-gamestate-restart>Restart</button>
         </nav>
       </div>
     </div>
 
     <canvas></canvas>
+    <div class="Fringe"></div>
   </body>
 </html>

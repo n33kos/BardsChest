@@ -9,6 +9,7 @@ export default class {
       transitions : document.querySelectorAll('[data-target-screen]'),
       play        : document.querySelectorAll('[data-gamestate-play]'),
       pause       : document.querySelectorAll('[data-gamestate-pause]'),
+      restart     : document.querySelectorAll('[data-gamestate-restart]'),
     };
   }
 
@@ -30,6 +31,11 @@ export default class {
     // Pause buttons
     Array.from(this.buttons.pause).forEach(button => {
       button.addEventListener('click', () => this.GameState.Game.togglePause() );
+    });
+
+    // Restart Buttons
+    Array.from(this.buttons.restart).forEach(button => {
+      button.addEventListener('click', () => this.GameState.Game.restart() );
     });
 
     // Quit buttons
