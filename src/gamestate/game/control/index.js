@@ -20,7 +20,7 @@ export default class {
 
     const direction = e.clientY > this.Game.ctx.canvas.height/2 ? -1 : 1;
 
-    this.Game.momentum += (this.oldMousePos - e.clientX) * direction;
+    this.Game.momentum += (this.oldMousePos - e.clientX) * direction * this.Game.deltaTime;
     this.oldMousePos = e.clientX;
   }
 
@@ -28,7 +28,7 @@ export default class {
     e = e || window.event;
 
     if (this.Game.isPaused || this.Game.level === null) return;
-    const rotationSpeed = 25;
+    const rotationSpeed = 50;
 
     if (e.keyCode == '38') {
       // up arrow
@@ -38,11 +38,11 @@ export default class {
     }
     if (e.keyCode == '37') {
       // left arrow
-      this.Game.momentum += rotationSpeed;
+      this.Game.momentum += rotationSpeed * this.Game.deltaTime;
     }
     if (e.keyCode == '39') {
       // right arrow
-      this.Game.momentum -= rotationSpeed;
+      this.Game.momentum -= rotationSpeed * this.Game.deltaTime;
     }
   }
 }

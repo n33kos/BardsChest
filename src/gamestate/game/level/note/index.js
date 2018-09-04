@@ -28,8 +28,15 @@ export default class {
 
     ctx.beginPath();
     ctx.arc(cx, cy, 128, (start - rotation), (end - rotation));
-    ctx.lineWidth = 30;
+    ctx.lineWidth = 15;
     ctx.strokeStyle = this.color;
+
+    ctx.shadowColor = this.color;
+    ctx.shadowBlur = 16;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
+
     ctx.stroke();
+    ctx.shadowBlur = 0;
   }
 }

@@ -9,16 +9,21 @@ export default class {
     this.audioContext = null;
     this.canvas = null;
     this.ctx = null;
-    this.drag = 0.1;
+    this.drag = 0.15;
     this.fullCircleRadian = Math.PI * 2;
     this.isPaused = false;
     this.level = null;
     this.levelProgress = 0;
-    this.mass = 0.005;
+    this.mass = 5000;
     this.masterAudioNode = null;
     this.momentum = 0;
     this.rotation = 0;
     this.sectionProgress = 0;
+    this.deltaTime = 0;
+    this.lastUpdate = Date.now();
+    this.images = {
+      center: {url : `${window.location.href}img/center.png`, image: null},
+    };
 
     this.initCanvas();
     this.initAudio();
@@ -28,6 +33,7 @@ export default class {
 
   // --------------------Helpers----------------
   play() {
+    this.loadImages();
     this.loadLevel();
   }
 
@@ -58,8 +64,22 @@ export default class {
   }
 
   physics() {
-    this.rotation += (this.momentum * this.mass);
+    this.rotation += (this.momentum / this.mass);
     this.momentum = this.momentum - (this.momentum * this.drag);
+  }
+
+  calculateDeltaTime() {
+    const now = Date.now();
+    this.deltaTime = now - this.lastUpdate;
+    this.lastUpdate = now;
+  }
+
+  drawGameObjects() {
+    const radius = 256;
+    this.ctx.translate(this.cx, this.cy);
+    this.ctx.rotate(-this.rotation);
+    this.ctx.drawImage(this.images.center.image, -radius/2, -radius/2, radius, radius);
+    this.ctx.resetTransform();
   }
 
   // --------------------Inits----------------
@@ -96,6 +116,16 @@ export default class {
   }
 
   // --------------------Loaders----------------
+  loadImages() {
+    Object.keys(this.images).forEach(key => {
+      const image = new Image();
+      image.src = this.images[key].url;
+      image.onload = () => {
+        this.images[key].image = image;
+      }
+    });
+  }
+
   loadLevel() {
     // This will be moved to individual files with an importer
     const level = new Level({
@@ -117,12 +147,15 @@ export default class {
 
   // --------------------Renders----------------
   render() {
+    this.calculateDeltaTime();
     window.requestAnimationFrame(this.render.bind(this));
     if(this.isPaused || this.level === null) return;
 
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     this.physics();
+
+    this.drawGameObjects();
 
     this.level.sections[this.levelProgress].notes.forEach((note, i) => {
       note.render(this.cx, this.cy, this.ctx, i, this.sectionSubtention, this.rotation);
@@ -167,11 +200,11 @@ export default class {
           this.sectionProgress = 0;
 
           // Reset all nextNotes
-          this.level.sections[this.levelProgress].noteTriggers.forEach(trigger => {
-            trigger.nextNote = null;
-          });
+          // this.level.sections[this.levelProgress].noteTriggers.forEach(trigger => {
+          //   trigger.nextNote = null;
+          // });
 
-          this.GameState.score += 8;
+          this.GameState.score -= Math.max(0, 8);
         }
 
         if (trigger.nextNote !== null && trigger.note === trigger.nextNote) {
