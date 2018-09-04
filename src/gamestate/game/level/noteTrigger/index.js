@@ -1,3 +1,5 @@
+import lerp from '../../../../utils/lerp';
+
 export default class {
   constructor({
     masterAudioNode,
@@ -33,5 +35,30 @@ export default class {
 
   stopNote(note) {
     note.audioNode.disconnect(this.masterAudioNode);
+  }
+
+  getPointAtRadius(cx, cy, radius) {
+    return {
+      x : cx + radius * Math.cos(this.position),
+      y : cy + radius * Math.sin(this.position),
+    };
+  }
+
+  render(cx, cy, ctx) {
+    if (this.nextNote) {
+      const duration = (this.endTime - this.startTime);
+      const timeElapsedPercentage = (this.endTime - Date.now()) / duration;
+
+      const start = this.getPointAtRadius(cx, cy, 128);
+      const finish = this.getPointAtRadius(cx, cy, ctx.canvas.height);
+
+      const xpos = lerp(start.x, finish.x, timeElapsedPercentage);
+      const ypos = lerp(start.y, finish.y, timeElapsedPercentage);
+
+      ctx.beginPath();
+      ctx.fillStyle = this.nextNote.color;
+      ctx.arc(xpos, ypos, 10, 0, Math.PI*2);
+      ctx.fill();
+    }
   }
 }

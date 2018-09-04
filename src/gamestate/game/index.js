@@ -1,5 +1,4 @@
 import Control               from './control/index';
-import lerp                  from '../../utils/lerp';
 import Level                 from './level/index';
 import oneBeatInMilliseconds from '../../utils/oneBeatInMilliseconds';
 
@@ -10,12 +9,14 @@ export default class {
     this.audioContext = null;
     this.canvas = null;
     this.ctx = null;
-    this.isMouseDown = false;
+    this.drag = 0.1;
+    this.fullCircleRadian = Math.PI * 2;
     this.isPaused = false;
     this.level = null;
     this.levelProgress = 0;
+    this.mass = 0.005;
     this.masterAudioNode = null;
-    this.oldMousePos = 0;
+    this.momentum = 0;
     this.rotation = 0;
     this.sectionProgress = 0;
 
@@ -48,12 +49,17 @@ export default class {
   }
 
   getNoteForPosition(position, rotation) {
-    const noteSectionLength = (Math.PI * 2 / this.level.notes.length);
+    const noteSectionLength = (Math.PI * 2 / this.level.sections[this.levelProgress].notes.length);
     const fullCircle = Math.PI * 2;
     let cleanRotation = this.loopValue(rotation + position, 0, fullCircle);
     let index = Math.abs(Math.floor(cleanRotation / noteSectionLength));
 
-    return this.level.notes[index];
+    return this.level.sections[this.levelProgress].notes[index];
+  }
+
+  physics() {
+    this.rotation += (this.momentum * this.mass);
+    this.momentum = this.momentum - (this.momentum * this.drag);
   }
 
   // --------------------Inits----------------
@@ -99,62 +105,14 @@ export default class {
 
     level.load().then(() => {
       this.level = level;
+      this.sectionSubtention = this.fullCircleRadian / this.level.sections[this.levelProgress].notes.length;
       this.GameState.UI.updateBPM(this.level.bpm);
       this.GameState.UI.updateLevel(this.levelProgress);
     });
   }
 
-  // --------------------Draw----------------
-  drawNotes() {
-    let fullCircleRadian = Math.PI * 2;
-    let section = fullCircleRadian / this.level.notes.length;
-
-    this.level.notes.forEach((note, i) => {
-      let start = section * i;
-      let end = start + section;
-
-      this.ctx.beginPath();
-      this.ctx.arc(this.cx, this.cy, this.cx/2, (start - this.rotation), (end - this.rotation));
-      this.ctx.lineWidth = 15;
-      this.ctx.strokeStyle = note.color;
-      this.ctx.stroke();
-    });
-  }
-
-  drawNoteTriggers() {
-    this.level.noteTriggers.forEach(trigger => {
-      // Draw Arc trigger Position
-      /*
-      const arcSize = 0.05;
-      const radius = this.cx/2 + 20;
-
-      this.ctx.beginPath();
-      this.ctx.arc(this.cx, this.cy, radius, trigger.position-arcSize, trigger.position+arcSize);
-      this.ctx.lineWidth = 10;
-      this.ctx.strokeStyle = trigger.nextNote ? trigger.nextNote.color : 'white';
-      this.ctx.stroke();
-      */
-      // ------------
-
-      // Draw circle from center
-      if (trigger.nextNote) {
-        const innerRadius = this.cx/2;
-        const targetX = this.cx + innerRadius * Math.cos(trigger.position);
-        const targetY = this.cy + innerRadius * Math.sin(trigger.position);
-
-        const duration = (trigger.endTime - trigger.startTime);
-        const timeElapsedPercentage = (trigger.endTime - Date.now()) / duration;
-
-        const xpos = lerp(targetX, this.cx, timeElapsedPercentage);
-        const ypos = lerp(targetY, this.cy, timeElapsedPercentage);
-
-        this.ctx.beginPath();
-        this.ctx.fillStyle = trigger.nextNote.color;
-        this.ctx.arc(xpos, ypos, 10, 0, Math.PI*2);
-        this.ctx.fill();
-      }
-      // ------------
-    });
+  loadSection() {
+    this.sectionSubtention = this.fullCircleRadian / this.level.sections[this.levelProgress].notes.length;
   }
 
   // --------------------Renders----------------
@@ -163,8 +121,16 @@ export default class {
     if(this.isPaused || this.level === null) return;
 
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.drawNotes();
-    this.drawNoteTriggers();
+
+    this.physics();
+
+    this.level.sections[this.levelProgress].notes.forEach((note, i) => {
+      note.render(this.cx, this.cy, this.ctx, i, this.sectionSubtention, this.rotation);
+    });
+
+    this.level.sections[this.levelProgress].noteTriggers.forEach(trigger => {
+      trigger.render(this.cx, this.cy, this.ctx);
+    });
   }
 
   audioRender() {
@@ -189,7 +155,7 @@ export default class {
     }
 
     // Handle individual notes
-    this.level.noteTriggers.forEach(trigger => {
+    this.level.sections[this.levelProgress].noteTriggers.forEach(trigger => {
       trigger.beatCounter++;
 
       if(trigger.beatCounter > trigger.beats) {
@@ -201,11 +167,11 @@ export default class {
           this.sectionProgress = 0;
 
           // Reset all nextNotes
-          this.level.noteTriggers.forEach(trigger => {
+          this.level.sections[this.levelProgress].noteTriggers.forEach(trigger => {
             trigger.nextNote = null;
           });
 
-          this.GameState.score -= 8;
+          this.GameState.score += 8;
         }
 
         if (trigger.nextNote !== null && trigger.note === trigger.nextNote) {
@@ -214,13 +180,14 @@ export default class {
 
         if (trigger.nextNote) trigger.fire();
 
-        trigger.nextNote = this.level.notes[
+        trigger.nextNote = this.level.sections[this.levelProgress].notes[
           this.level.sections[this.levelProgress].unlockPattern[this.sectionProgress]
         ];
 
         if (this.sectionProgress > this.level.sections[this.levelProgress].unlockPattern.length) {
           // Section Complete condition!
           this.levelProgress++;
+          this.loadSection();
           this.sectionProgress = 0;
         }
 

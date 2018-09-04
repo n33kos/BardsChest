@@ -17,8 +17,19 @@ export default class {
     oscillator.start();
 
     const gain = audioContext.createGain();
-    gain.gain.value = 0.05;
+    gain.gain.value = 0.5;
 
     return oscillator.connect(gain);
+  }
+
+  render(cx, cy, ctx, i, sectionSubtention, rotation) {
+    let start = sectionSubtention * i;
+    let end = start + sectionSubtention;
+
+    ctx.beginPath();
+    ctx.arc(cx, cy, 128, (start - rotation), (end - rotation));
+    ctx.lineWidth = 30;
+    ctx.strokeStyle = this.color;
+    ctx.stroke();
   }
 }

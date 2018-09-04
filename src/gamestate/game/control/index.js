@@ -1,30 +1,34 @@
 export default class {
   constructor(Game) {
     this.Game = Game;
+    this.isMouseDown = false;
+    this.oldMousePos = 0;
   }
 
   init() {
     document.body.addEventListener("mousemove", this.handleMouseMove.bind(this));
     document.body.addEventListener("mousedown", e => {
-      this.Game.isMouseDown = true;
-      this.Game.oldMousePos = e.clientX;
+      this.isMouseDown = true;
+      this.oldMousePos = e.clientX;
     });
-    document.body.addEventListener("mouseup", e => { this.Game.isMouseDown = false; });
+    document.body.addEventListener("mouseup", e => { this.isMouseDown = false; });
     document.onkeydown = this.handleKeypress.bind(this);
   }
 
   handleMouseMove(e) {
-    if (!this.Game.isMouseDown || this.Game.isPaused) return;
+    if (!this.isMouseDown || this.Game.isPaused) return;
 
-    this.Game.rotation += (this.Game.oldMousePos - e.clientX) * 0.01;
-    this.Game.oldMousePos = e.clientX;
+    const direction = e.clientY > this.Game.ctx.canvas.height/2 ? -1 : 1;
+
+    this.Game.momentum += (this.oldMousePos - e.clientX) * direction;
+    this.oldMousePos = e.clientX;
   }
 
   handleKeypress(e) {
     e = e || window.event;
 
     if (this.Game.isPaused || this.Game.level === null) return;
-    const rotationSpeed = Math.PI * 2 / this.Game.level.notes.length;
+    const rotationSpeed = 25;
 
     if (e.keyCode == '38') {
       // up arrow
@@ -34,11 +38,11 @@ export default class {
     }
     if (e.keyCode == '37') {
       // left arrow
-      this.Game.rotation += rotationSpeed;
+      this.Game.momentum += rotationSpeed;
     }
     if (e.keyCode == '39') {
       // right arrow
-      this.Game.rotation -= rotationSpeed;
+      this.Game.momentum -= rotationSpeed;
     }
   }
 }
