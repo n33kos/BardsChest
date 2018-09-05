@@ -3,11 +3,13 @@ export default class {
     audioContext,
     color = 'rgba(255, 255, 255, 1)',
     frequency = 110,
+    radius,
   }) {
     this.audioContext = audioContext;
     this.color = color;
     this.frequency = frequency;
     this.audioNode = this.initAudioNode(audioContext);
+    this.radius = radius / 2;
   }
 
   initAudioNode(audioContext) {
@@ -27,7 +29,7 @@ export default class {
     let end = start + sectionSubtention;
 
     ctx.beginPath();
-    ctx.arc(cx, cy, 128, (start - rotation), (end - rotation));
+    ctx.arc(cx, cy, this.radius, (start - rotation), (end - rotation));
     ctx.lineWidth = 10;
     ctx.strokeStyle = this.color;
 

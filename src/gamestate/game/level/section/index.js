@@ -8,18 +8,16 @@ export default class {
     buffer = null,
     isLoaded = false,
     masterAudioNode,
+    radius,
     notes = [
-      new Note({ audioContext, color: 'red', frequency: 88 }),
-      new Note({ audioContext, color: 'orange', frequency: 98.776 }),
-      new Note({ audioContext, color: 'yellow', frequency: 104.65 }),
-      new Note({ audioContext, color: 'green', frequency: 117.466 }),
-      new Note({ audioContext, color: 'blue', frequency: 131.85 }),
-      new Note({ audioContext, color: 'indigo', frequency: 139.692 }),
+      new Note({ audioContext, color: 'red', frequency: 88, radius }),
+      new Note({ audioContext, color: 'orange', frequency: 98.776, radius }),
+      new Note({ audioContext, color: 'yellow', frequency: 104.65, radius }),
+      new Note({ audioContext, color: 'green', frequency: 117.466, radius }),
+      new Note({ audioContext, color: 'blue', frequency: 131.85, radius }),
+      new Note({ audioContext, color: 'indigo', frequency: 139.692, radius }),
     ],
-    noteTriggers = [
-      new NoteTrigger({ masterAudioNode, noteDuration : 100, startDelay: 0, position : -Math.PI / 4, beats : 4 }),
-      new NoteTrigger({ masterAudioNode, noteDuration : 100, startDelay: 1, position : Math.PI / 4, beats : 4 }),
-    ],
+    noteTriggers,
     unlockPattern = [0, 1, 2, 3, 4, 5],
     url = 'metronome-100-bpm.ogg',
   }) {
@@ -31,6 +29,7 @@ export default class {
     this.masterAudioNode = masterAudioNode;
     this.notes = notes;
     this.noteTriggers = noteTriggers;
+    this.radius = radius;
     this.unlockPattern = unlockPattern;
     this.url = url;
   }

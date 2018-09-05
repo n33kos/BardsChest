@@ -1,5 +1,5 @@
 body {
-  background-color: #333;
+  background-color: #222;
   margin: 0;
   padding: 0;
 }
@@ -11,7 +11,7 @@ canvas {
   position: absolute;
   top: 0;
   width: 100%;
-  z-index: 2;
+  z-index: 5;
 }
 
 .UserInterface {
@@ -21,7 +21,7 @@ canvas {
   position: absolute;
   top: 0;
   width: 100%;
-  z-index: 5;
+  z-index: 10;
 }
 
 .Screen {
@@ -40,14 +40,45 @@ canvas {
   transform: translateX(0);
 }
 
-.Fringe {
+.Band {
   background-image: url('/dist/img/fringe.png');
   background-repeat: repeat-x;
+  background-size: contain;
+  border-radius: 8px;
   display: block;
-  height: 256px;
-  position: absolute;
+  height: 15vh;
+  left: 20px;
+  position: fixed;
   top: 50%;
   transform: translateY(-50%);
-  width: 100%;
+  width: calc(100% - 40px);
+  z-index: 3;
+}
+
+.ChestTop {
+  background-image: url('/dist/img/woodtop.png');
+  background-repeat: repeat-x;
+  background-size: contain;
+  border-radius: 8px;
+  display: block;
+  height: 50%;
+  left: 30px;
+  position: fixed;
+  top: 30px;
+  width: calc(100% - 60px);
+  z-index: 2;
+}
+
+.ChestBottom {
+  background-image: url('/dist/img/woodbottom.png');
+  background-repeat: repeat-x;
+  background-size: contain;
+  border-radius: 8px;
+  bottom: 0;
+  display: block;
+  height: 50%;
+  left: 30px;
+  position: fixed;
+  width: calc(100% - 60px);
   z-index: 1;
 }

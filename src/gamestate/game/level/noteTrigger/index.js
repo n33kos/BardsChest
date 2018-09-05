@@ -2,11 +2,12 @@ import lerp from '../../../../utils/lerp';
 
 export default class {
   constructor({
+    beats = 1, // how many beats before repeating
     masterAudioNode,
     noteDuration = 100,
     position = 0, // position around the circle in radians
+    radius,
     startDelay = 0, // how many beats to delay start
-    beats = 1, // how many beats before repeating
   }) {
     this.masterAudioNode = masterAudioNode;
     this.note = null;
@@ -17,6 +18,7 @@ export default class {
     this.nextNote = null;
     this.startTime = null;
     this.position = position;
+    this.radius = radius / 2;
   }
 
   fire() {
@@ -49,7 +51,7 @@ export default class {
       const duration = (this.endTime - this.startTime);
       const timeElapsedPercentage = (this.endTime - Date.now()) / duration;
 
-      const start = this.getPointAtRadius(cx, cy, 128);
+      const start = this.getPointAtRadius(cx, cy, this.radius);
       const finish = this.getPointAtRadius(cx, cy, ctx.canvas.height);
 
       const xpos = lerp(start.x, finish.x, timeElapsedPercentage);

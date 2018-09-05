@@ -9,15 +9,17 @@ export default class {
     this.audioContext = null;
     this.canvas = null;
     this.ctx = null;
-    this.drag = 0.15;
+    this.drag = 0.10;
     this.fullCircleRadian = Math.PI * 2;
     this.isPaused = false;
     this.level = null;
     this.levelProgress = 0;
-    this.mass = 5000;
+    this.mass = 8000;
     this.masterAudioNode = null;
     this.momentum = 0;
+    this.radius = Math.min(window.innerWidth / 3, window.innerHeight / 3);
     this.rotation = 0;
+    this.sectionKey = [];
     this.sectionProgress = 0;
     this.deltaTime = 0;
     this.lastUpdate = Date.now();
@@ -29,11 +31,11 @@ export default class {
     this.initAudio();
     this.initControls();
     this.startRenderLoops();
+    this.loadImages();
   }
 
   // --------------------Helpers----------------
   play() {
-    this.loadImages();
     this.loadLevel();
   }
 
@@ -43,6 +45,7 @@ export default class {
     this.momentum = 0;
     this.rotation = 0;
     this.sectionProgress = 0;
+    this.sectionKey = [];
     this.loadLevel();
   }
 
@@ -61,6 +64,7 @@ export default class {
   	this.canvas.height = window.innerHeight;
     this.cx = this.ctx.canvas.width/2;
     this.cy = this.ctx.canvas.height/2;
+    this.radius = Math.min(window.innerWidth / 3, window.innerHeight / 3);
   }
 
   loopValue(val, min, max) {
@@ -76,7 +80,7 @@ export default class {
     let cleanRotation = this.loopValue(rotation + position, 0, fullCircle);
     let index = Math.abs(Math.floor(cleanRotation / noteSectionLength));
 
-    return this.level.sections[this.levelProgress].notes[index];
+    return {note: this.level.sections[this.levelProgress].notes[index], index};
   }
 
   physics() {
@@ -91,11 +95,12 @@ export default class {
   }
 
   drawGameObjects() {
-    const radius = 256;
-    this.ctx.translate(this.cx, this.cy);
-    this.ctx.rotate(-this.rotation);
-    this.ctx.drawImage(this.images.center.image, -radius/2, -radius/2, radius, radius);
-    this.ctx.resetTransform();
+    if (this.images.center.image !== null) {
+      this.ctx.translate(this.cx, this.cy);
+      this.ctx.rotate(-this.rotation);
+      this.ctx.drawImage(this.images.center.image, -this.radius/2, -this.radius/2, this.radius, this.radius);
+      this.ctx.resetTransform();
+    }
   }
 
   // --------------------Inits----------------
@@ -135,6 +140,15 @@ export default class {
     this.render();
   }
 
+  areArraysIdentical(arr1, arr2) {
+    if(arr1.length !== arr2.length) return false;
+    for(var i = arr1.length; i--;) {
+      if(arr1[i] !== arr2[i]) return false;
+    }
+
+    return true;
+  }
+
   // --------------------Loaders----------------
   loadImages() {
     Object.keys(this.images).forEach(key => {
@@ -151,6 +165,7 @@ export default class {
     const level = new Level({
       audioContext    : this.audioContext,
       masterAudioNode : this.masterAudioNode,
+      radius          : this.radius,
     });
 
     level.load().then(() => {
@@ -167,16 +182,26 @@ export default class {
 
   // --------------------Renders----------------
   render() {
-    this.calculateDeltaTime();
+    // Request new frame
     window.requestAnimationFrame(this.render.bind(this));
-    if(this.isPaused || this.level === null) return;
 
+    // clear
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
+    // Calculations
+    this.calculateDeltaTime();
     this.physics();
 
+    // Draw non-level specific elements
     this.drawGameObjects();
 
+    // Handle keypresses
+    this.control.handlePressedKeys();
+
+    // Bail out early
+    if(this.isPaused || this.level === null) return;
+
+    // Draw level specific elements
     this.level.sections[this.levelProgress].notes.forEach((note, i) => {
       note.render(this.cx, this.cy, this.ctx, i, this.sectionSubtention, this.rotation);
     });
@@ -200,8 +225,8 @@ export default class {
     // Bail out if no more sections
     if(!section) return;
 
+    // play background track
     section.beatCounter++;
-
     if(section.beatCounter > section.beats) {
       section.beatCounter = 1;
       this.level.sections[this.levelProgress].buffer.play(frequency);
@@ -212,45 +237,54 @@ export default class {
       trigger.beatCounter++;
 
       if(trigger.beatCounter > trigger.beats) {
+        // Reset beat counter
         trigger.beatCounter = 1;
-        trigger.note = this.getNoteForPosition(trigger.position, this.rotation);
 
-        if (trigger.nextNote !== null && trigger.note !== trigger.nextNote) {
-          // Reset section progress
-          this.sectionProgress = 0;
-
-          // Reset all nextNotes
-          // this.level.sections[this.levelProgress].noteTriggers.forEach(trigger => {
-          //   trigger.nextNote = null;
-          // });
-
-          this.GameState.score = Math.max(0, this.GameState.score-8);
-        }
-
-        if (trigger.nextNote !== null && trigger.note === trigger.nextNote) {
-          this.GameState.score += 10;
-        }
-
-        if (trigger.nextNote) trigger.fire();
-
+        // Set trigger's nextnote
         trigger.nextNote = this.level.sections[this.levelProgress].notes[
           this.level.sections[this.levelProgress].unlockPattern[this.sectionProgress]
         ];
 
-        if (this.sectionProgress > this.level.sections[this.levelProgress].unlockPattern.length) {
-          // Section Complete condition!
-          this.levelProgress++;
-          this.loadSection();
-          this.sectionProgress = 0;
+        // Get current note
+        const currentNote = this.getNoteForPosition(trigger.position, this.rotation);
+        trigger.note = currentNote.note;
+
+        if (this.level.sections[this.levelProgress].unlockPattern[this.sectionProgress] === currentNote.index) {
+          this.sectionKey.push(currentNote.index);
         }
 
+        // Score and progress
+        if (trigger.note !== trigger.nextNote) {
+          this.GameState.score = Math.max(0, this.GameState.score-5);
+        }else {
+          this.GameState.score += 10;
+        }
+
+        // play the note if it exists
+        if (trigger.nextNote) trigger.fire();
+
+        // Win condition!
         if (this.levelProgress >= this.level.sections.length) {
-          // Win condition!
           this.GameState.UI.setScreen('score');
           setTimeout(() => this.isPaused = true, 250);
         }
 
+        // Section Complete condition!
+        if (this.areArraysIdentical(
+          this.sectionKey,
+          this.level.sections[this.levelProgress].unlockPattern,
+        )) {
+          this.levelProgress++;
+          this.sectionKey = [];
+          this.sectionProgress = 0;
+          this.loadSection();
+        }
+
+        //fix this is all janked up
         this.sectionProgress++;
+        if (this.sectionProgress > this.level.sections[this.levelProgress].unlockPattern.length) this.sectionProgress = 0;
+        console.log(this.sectionKey);
+
         trigger.startTime = Date.now();
         trigger.endTime = Date.now() + (oneBeatInMilliseconds(this.level.bpm) * trigger.beats);
         this.GameState.UI.updateScore(this.GameState.score);

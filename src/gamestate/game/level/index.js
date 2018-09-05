@@ -7,42 +7,50 @@ export default class {
   constructor({
     audioContext,
     bpm = 100,
-    sections,
     GameState,
     masterAudioNode,
+    radius,
+    sections,
   }) {
     this.audioContext = audioContext;
     this.sections = sections;
     this.bpm = bpm;
     this.GameState = GameState;
     this.masterAudioNode = masterAudioNode;
+    this.radius = radius;
     this.sections = [
       new Section({
         audioContext,
         masterAudioNode,
         unlockPattern : [0, 1, 2, 3, 4, 5],
         notes : [
-          new Note({ audioContext, color: 'red', frequency: 88 }),
-          new Note({ audioContext, color: 'orange', frequency: 98.776 }),
-          new Note({ audioContext, color: 'yellow', frequency: 104.65 }),
-          new Note({ audioContext, color: 'green', frequency: 117.466 }),
-          new Note({ audioContext, color: 'blue', frequency: 131.85 }),
-          new Note({ audioContext, color: 'indigo', frequency: 139.692 }),
-        ]
+          new Note({ audioContext, color: 'red', frequency: 88, radius }),
+          new Note({ audioContext, color: 'orange', frequency: 98.776, radius }),
+          new Note({ audioContext, color: 'yellow', frequency: 104.65, radius }),
+          new Note({ audioContext, color: 'green', frequency: 117.466, radius }),
+          new Note({ audioContext, color: 'blue', frequency: 131.85, radius }),
+          new Note({ audioContext, color: 'indigo', frequency: 139.692, radius }),
+        ],
+        noteTriggers : [
+          new NoteTrigger({ masterAudioNode, noteDuration : 100, startDelay: 0, position : 0, beats : 4, radius }),
+          new NoteTrigger({ masterAudioNode, noteDuration : 100, startDelay: 2, position : Math.PI, beats : 4, radius }),
+        ],
       }),
       new Section({
         audioContext,
         masterAudioNode,
         unlockPattern : [0, 1, 0, 2, 0, 3],
         noteTriggers : [
-          new NoteTrigger({ masterAudioNode, noteDuration : 100, startDelay: 0, position : 0, beats : 4 }),
-          new NoteTrigger({ masterAudioNode, noteDuration : 100, startDelay: 1, position : Math.PI, beats : 4 }),
+          new NoteTrigger({ masterAudioNode, noteDuration : 100, startDelay: 0, position : 0, beats : 2, radius }),
+          new NoteTrigger({ masterAudioNode, noteDuration : 100, startDelay: 0, position : Math.PI / 2, beats : 4, radius }),
+          new NoteTrigger({ masterAudioNode, noteDuration : 100, startDelay: 0, position : Math.PI, beats : 6, radius }),
+          new NoteTrigger({ masterAudioNode, noteDuration : 100, startDelay: 0, position : Math.PI * 2, beats : 8, radius }),
         ],
         notes : [
-          new Note({ audioContext, color: 'red', frequency: 88 }),
-          new Note({ audioContext, color: 'orange', frequency: 98.776 }),
-          new Note({ audioContext, color: 'green', frequency: 117.466 }),
-          new Note({ audioContext, color: 'indigo', frequency: 139.692 }),
+          new Note({ audioContext, color: 'red', frequency: 88, radius }),
+          new Note({ audioContext, color: 'orange', frequency: 98.776, radius }),
+          new Note({ audioContext, color: 'green', frequency: 117.466, radius }),
+          new Note({ audioContext, color: 'indigo', frequency: 139.692, radius }),
         ]
       }),
     ];
