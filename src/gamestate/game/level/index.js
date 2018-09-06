@@ -21,6 +21,7 @@ export default class {
     this.sections = [
       new Section({
         audioContext,
+        bpm,
         masterAudioNode,
         unlockPattern : [0, 1, 2, 3, 4, 5],
         notes : [
@@ -33,11 +34,14 @@ export default class {
         ],
         noteTriggers : [
           new NoteTrigger({ masterAudioNode, noteDuration : 100, startDelay: 0, position : 0, beats : 4, radius }),
+          new NoteTrigger({ masterAudioNode, noteDuration : 100, startDelay: 1, position : (Math.PI*0.5), beats : 4, radius }),
           new NoteTrigger({ masterAudioNode, noteDuration : 100, startDelay: 2, position : Math.PI, beats : 4, radius }),
+          new NoteTrigger({ masterAudioNode, noteDuration : 100, startDelay: 3, position : Math.PI*1.5, beats : 4, radius }),
         ],
       }),
       new Section({
         audioContext,
+        bpm,
         masterAudioNode,
         unlockPattern : [0, 1, 0, 2, 0, 3],
         noteTriggers : [

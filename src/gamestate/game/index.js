@@ -1,3 +1,4 @@
+import areArraysIdentical    from '../../utils/areArraysIdentical';
 import Control               from './control/index';
 import Level                 from './level/index';
 import oneBeatInMilliseconds from '../../utils/oneBeatInMilliseconds';
@@ -30,7 +31,6 @@ export default class {
     this.initCanvas();
     this.initAudio();
     this.initControls();
-    this.startRenderLoops();
     this.loadImages();
   }
 
@@ -65,22 +65,6 @@ export default class {
     this.cx = this.ctx.canvas.width/2;
     this.cy = this.ctx.canvas.height/2;
     this.radius = Math.min(window.innerWidth / 3, window.innerHeight / 3);
-  }
-
-  loopValue(val, min, max) {
-    const p = max - min;
-    let mod = (val - min) % p;
-    if (mod < 0) mod += p;
-    return min + mod;
-  }
-
-  getNoteForPosition(position, rotation) {
-    const noteSectionLength = (Math.PI * 2 / this.level.sections[this.levelProgress].notes.length);
-    const fullCircle = Math.PI * 2;
-    let cleanRotation = this.loopValue(rotation + position, 0, fullCircle);
-    let index = Math.abs(Math.floor(cleanRotation / noteSectionLength));
-
-    return {note: this.level.sections[this.levelProgress].notes[index], index};
   }
 
   physics() {
@@ -140,15 +124,6 @@ export default class {
     this.render();
   }
 
-  areArraysIdentical(arr1, arr2) {
-    if(arr1.length !== arr2.length) return false;
-    for(var i = arr1.length; i--;) {
-      if(arr1[i] !== arr2[i]) return false;
-    }
-
-    return true;
-  }
-
   // --------------------Loaders----------------
   loadImages() {
     Object.keys(this.images).forEach(key => {
@@ -173,6 +148,7 @@ export default class {
       this.sectionSubtention = this.fullCircleRadian / this.level.sections[this.levelProgress].notes.length;
       this.GameState.UI.updateBPM(this.level.bpm);
       this.GameState.UI.updateLevel(this.levelProgress);
+      this.startRenderLoops();
     });
   }
 
@@ -213,81 +189,44 @@ export default class {
 
   audioRender() {
     // Set timeout for next beat
+    const section = this.level.sections[this.levelProgress];
     const frequency = this.getAudioRenderFrequency();
     setTimeout(this.audioRender.bind(this), frequency);
 
     // Bail out if paused or no level is loaded
-    if(this.isPaused || this.level === null) return;
-
-    // Handle Background Music
-    const section = this.level.sections[this.levelProgress];
-
-    // Bail out if no more sections
-    if(!section) return;
+    if(this.isPaused || this.level === null || !section) return;
 
     // play background track
     section.beatCounter++;
     if(section.beatCounter > section.beats) {
       section.beatCounter = 1;
-      this.level.sections[this.levelProgress].buffer.play(frequency);
+      section.buffer.play(frequency);
     }
 
-    // Handle individual notes
-    this.level.sections[this.levelProgress].noteTriggers.forEach(trigger => {
-      trigger.beatCounter++;
+    // Render NoteTrigger
+    section.noteTriggers.forEach(trigger => {
+      const mergeData = trigger.audioRender(
+        section,
+        this.sectionProgress,
+        this.sectionKey,
+        this.rotation,
+      );
+      this.sectionProgress = mergeData.sectionProgress;
+      this.GameState.score = Math.min(this.GameState.score - mergeData.score, 0);
+      this.GameState.UI.updateScore(this.GameState.score);
 
-      if(trigger.beatCounter > trigger.beats) {
-        // Reset beat counter
-        trigger.beatCounter = 1;
+      // Win condition!
+      if (this.levelProgress >= this.level.sections.length) {
+        this.GameState.UI.setScreen('score');
+        setTimeout(() => this.isPaused = true, 250);
+      }
 
-        // Set trigger's nextnote
-        trigger.nextNote = this.level.sections[this.levelProgress].notes[
-          this.level.sections[this.levelProgress].unlockPattern[this.sectionProgress]
-        ];
-
-        // Get current note
-        const currentNote = this.getNoteForPosition(trigger.position, this.rotation);
-        trigger.note = currentNote.note;
-
-        if (this.level.sections[this.levelProgress].unlockPattern[this.sectionProgress] === currentNote.index) {
-          this.sectionKey.push(currentNote.index);
-        }
-
-        // Score and progress
-        if (trigger.note !== trigger.nextNote) {
-          this.GameState.score = Math.max(0, this.GameState.score-5);
-        }else {
-          this.GameState.score += 10;
-        }
-
-        // play the note if it exists
-        if (trigger.nextNote) trigger.fire();
-
-        // Win condition!
-        if (this.levelProgress >= this.level.sections.length) {
-          this.GameState.UI.setScreen('score');
-          setTimeout(() => this.isPaused = true, 250);
-        }
-
-        // Section Complete condition!
-        if (this.areArraysIdentical(
-          this.sectionKey,
-          this.level.sections[this.levelProgress].unlockPattern,
-        )) {
-          this.levelProgress++;
-          this.sectionKey = [];
-          this.sectionProgress = 0;
-          this.loadSection();
-        }
-
-        //fix this is all janked up
-        this.sectionProgress++;
-        if (this.sectionProgress > this.level.sections[this.levelProgress].unlockPattern.length) this.sectionProgress = 0;
-        console.log(this.sectionKey);
-
-        trigger.startTime = Date.now();
-        trigger.endTime = Date.now() + (oneBeatInMilliseconds(this.level.bpm) * trigger.beats);
-        this.GameState.UI.updateScore(this.GameState.score);
+      // Section Complete condition!
+      if (areArraysIdentical(this.sectionKey, section.unlockPattern )) {
+        this.levelProgress++;
+        this.sectionKey = [];
+        this.sectionProgress = 0;
+        this.loadSection();
       }
     });
   }

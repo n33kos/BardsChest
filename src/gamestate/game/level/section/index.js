@@ -5,6 +5,7 @@ export default class {
   constructor({
     audioContext,
     beats = 4,
+    bpm,
     buffer = null,
     isLoaded = false,
     masterAudioNode,
@@ -24,6 +25,7 @@ export default class {
     this.audioContext = audioContext;
     this.beatCounter = beats; // using beats means it will play right away
     this.beats = beats;
+    this.bpm = bpm;
     this.buffer = buffer;
     this.isLoaded = isLoaded;
     this.masterAudioNode = masterAudioNode;
