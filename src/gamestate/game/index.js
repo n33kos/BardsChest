@@ -158,6 +158,8 @@ export default class {
 
   // --------------------Renders----------------
   render() {
+    const section = this.level.sections[this.levelProgress];
+
     // Request new frame
     window.requestAnimationFrame(this.render.bind(this));
 
@@ -178,11 +180,11 @@ export default class {
     if(this.isPaused || this.level === null) return;
 
     // Draw level specific elements
-    this.level.sections[this.levelProgress].notes.forEach((note, i) => {
+    section.notes.forEach((note, i) => {
       note.render(this.cx, this.cy, this.ctx, i, this.sectionSubtention, this.rotation);
     });
 
-    this.level.sections[this.levelProgress].noteTriggers.forEach(trigger => {
+    section.noteTriggers.forEach(trigger => {
       trigger.render(this.cx, this.cy, this.ctx);
     });
   }
