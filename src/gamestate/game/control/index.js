@@ -1,3 +1,5 @@
+import { debounce } from 'throttle-debounce';
+
 export default class {
   constructor(Game) {
     this.direction = 1;
@@ -6,11 +8,13 @@ export default class {
     this.oldMousePos = 0;
     this.pressedKeys = [];
     this.rotationSpeed = 6;
+    this.debounceValue = 10;
   }
 
   init() {
     // Mouse
-    document.body.addEventListener("mousemove", this.handleMouseMove.bind(this));
+    const debouncedMouseMove = debounce(this.debounceValue, (e) => this.handleMouseMove(e));
+    document.body.addEventListener("mousemove", debouncedMouseMove);
     document.body.addEventListener("mousedown", e => {
       this.isMouseDown = true;
       this.oldMousePos = e.clientX;
@@ -19,7 +23,8 @@ export default class {
     document.body.addEventListener("mouseup", e => { this.isMouseDown = false; });
 
     // Touch
-    document.addEventListener('touchmove', this.handleTouchMove.bind(this));
+    const debouncedTouchMove = debounce(this.debounceValue, (e) => this.handleTouchMove(e));
+    document.addEventListener('touchmove', debouncedTouchMove);
     document.addEventListener('touchstart', e => {
       this.isMouseDown = true;
       this.oldMousePos = e.targetTouches[0].clientX;

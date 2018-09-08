@@ -1,7 +1,8 @@
 import areArraysIdentical    from '../../utils/areArraysIdentical';
 import Control               from './control/index';
-import Level                 from './level/index';
 import oneBeatInMilliseconds from '../../utils/oneBeatInMilliseconds';
+
+import Level1                from './level/levels/level-1';
 
 export default class {
   constructor(GameState) {
@@ -14,6 +15,7 @@ export default class {
     this.fullCircleRadian = Math.PI * 2;
     this.isPaused = false;
     this.level = null;
+    this.levels = [];
     this.levelProgress = 0;
     this.mass = 8000;
     this.masterAudioNode = null;
@@ -21,9 +23,11 @@ export default class {
     this.radius = Math.min(window.innerWidth / 3, window.innerHeight / 3);
     this.rotation = 0;
     this.sectionKey = [];
+    this.section = null;
     this.sectionProgress = 0;
     this.deltaTime = 0;
     this.lastUpdate = Date.now();
+    this.isRunning = false;
     this.images = {
       center: {url : `${window.location.href}img/center.png`, image: null},
     };
@@ -32,11 +36,13 @@ export default class {
     this.initAudio();
     this.initControls();
     this.loadImages();
+    this.importLevels();
   }
 
   // --------------------Helpers----------------
   play() {
     this.loadLevel();
+    this.startRenderLoops();
   }
 
   restart() {
@@ -88,6 +94,17 @@ export default class {
   }
 
   // --------------------Inits----------------
+  importLevels() {
+    this.levels.push(
+      Level1({
+        audioContext    : this.audioContext,
+        GameState       : this.GameState,
+        masterAudioNode : this.masterAudioNode,
+        radius          : this.radius,
+      }),
+    );
+  }
+
   initCanvas() {
     let canvas = document.querySelector('canvas');
     canvas.width = window.innerWidth;
@@ -120,8 +137,11 @@ export default class {
   }
 
   startRenderLoops() {
-    this.audioRender();
-    this.render();
+    if (!this.isRunning) {
+      this.isRunning = true;
+      this.audioRender();
+      this.render();
+    };
   }
 
   // --------------------Loaders----------------
@@ -136,30 +156,28 @@ export default class {
   }
 
   loadLevel() {
-    // This will be moved to individual files with an importer
-    const level = new Level({
-      audioContext    : this.audioContext,
-      masterAudioNode : this.masterAudioNode,
-      radius          : this.radius,
-    });
-
-    level.load().then(() => {
-      this.level = level;
-      this.sectionSubtention = this.fullCircleRadian / this.level.sections[this.levelProgress].notes.length;
-      this.GameState.UI.updateBPM(this.level.bpm);
-      this.GameState.UI.updateLevel(this.levelProgress);
-      this.startRenderLoops();
-    });
+    this.level = this.levels[this.GameState.level];
+    this.sectionSubtention = this.fullCircleRadian / this.level.sections[this.levelProgress].notes.length;
+    this.GameState.UI.updateBPM(this.level.bpm);
+    this.GameState.UI.updateLevel(this.levelProgress);
+    this.level.load();
+    this.loadSection();
   }
 
   loadSection() {
+    this.section = this.level.sections[this.levelProgress]
     this.sectionSubtention = this.fullCircleRadian / this.level.sections[this.levelProgress].notes.length;
   }
 
   // --------------------Renders----------------
-  render() {
-    const section = this.level.sections[this.levelProgress];
+  shouldRenderGameplay(section) {
+    return !this.isPaused
+    && this.level !== null
+    && this.level.isLoaded === true
+    && section;
+  }
 
+  render() {
     // Request new frame
     window.requestAnimationFrame(this.render.bind(this));
 
@@ -177,38 +195,36 @@ export default class {
     this.control.handlePressedKeys();
 
     // Bail out early
-    if(this.isPaused || this.level === null) return;
+    if(!this.shouldRenderGameplay(this.section)) return;
 
     // Draw level specific elements
-    section.notes.forEach((note, i) => {
+    this.section.notes.forEach((note, i) => {
       note.render(this.cx, this.cy, this.ctx, i, this.sectionSubtention, this.rotation);
     });
 
-    section.noteTriggers.forEach(trigger => {
+    this.section.noteTriggers.forEach(trigger => {
       trigger.render(this.cx, this.cy, this.ctx);
     });
   }
 
   audioRender() {
     // Set timeout for next beat
-    const section = this.level.sections[this.levelProgress];
-    const frequency = this.getAudioRenderFrequency();
-    setTimeout(this.audioRender.bind(this), frequency);
+    setTimeout(this.audioRender.bind(this), this.getAudioRenderFrequency());
 
-    // Bail out if paused or no level is loaded
-    if(this.isPaused || this.level === null || !section) return;
+    // Bail out early
+    if(!this.shouldRenderGameplay(this.section)) return;
 
     // play background track
-    section.beatCounter++;
-    if(section.beatCounter > section.beats) {
-      section.beatCounter = 1;
-      section.buffer.play(frequency);
+    this.section.beatCounter++;
+    if(this.section.beatCounter > this.section.beats) {
+      this.section.beatCounter = 1;
+      this.section.audioNode.play();
     }
 
     // Render NoteTrigger
-    section.noteTriggers.forEach(trigger => {
+    this.section.noteTriggers.forEach(trigger => {
       const mergeData = trigger.audioRender(
-        section,
+        this.section,
         this.sectionProgress,
         this.sectionKey,
         this.rotation,
@@ -224,7 +240,7 @@ export default class {
       }
 
       // Section Complete condition!
-      if (areArraysIdentical(this.sectionKey, section.unlockPattern )) {
+      if (areArraysIdentical(this.sectionKey, this.section.unlockPattern )) {
         this.levelProgress++;
         this.sectionKey = [];
         this.sectionProgress = 0;

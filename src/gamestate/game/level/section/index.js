@@ -4,10 +4,10 @@ import NoteTrigger from '../noteTrigger/index';
 export default class {
   constructor({
     audioContext,
-    beats = 4,
+    beats,
+    beatCounter,
     bpm,
     buffer = null,
-    isLoaded = false,
     masterAudioNode,
     radius,
     notes = [
@@ -23,11 +23,11 @@ export default class {
     url = 'metronome-100-bpm.ogg',
   }) {
     this.audioContext = audioContext;
-    this.beatCounter = beats; // using beats means it will play right away
+    this.audioNode = null;
+    this.beatCounter = beatCounter;
     this.beats = beats;
     this.bpm = bpm;
     this.buffer = buffer;
-    this.isLoaded = isLoaded;
     this.masterAudioNode = masterAudioNode;
     this.notes = notes;
     this.noteTriggers = noteTriggers;

@@ -6,7 +6,6 @@ export default class {
   constructor({
     beats = 1, // how many beats before repeating
     masterAudioNode,
-    noteDuration = 100,
     position = 0, // position around the circle in radians
     radius,
     startDelay = 0, // how many beats to delay start
@@ -15,7 +14,6 @@ export default class {
     this.beats = beats;
     this.currentNote = null;
     this.masterAudioNode = masterAudioNode;
-    this.noteDuration = noteDuration;
     this.position = position;
     this.radius = radius / 2;
     this.startDelay = startDelay;
@@ -23,22 +21,9 @@ export default class {
     this.targetNote = null;
   }
 
-  fire() {
+  triggerNote() {
     if (this.currentNote === null) return;
-
-    // clone note object so we can stop it even if it gets unset before the stop call
-    const noteToPlay = Object.assign({}, this.currentNote);
-    this.playNote(noteToPlay);
-
-    setTimeout(() => { this.stopNote(noteToPlay); }, this.noteDuration);
-  }
-
-  playNote(note) {
-    note.audioNode.connect(this.masterAudioNode);
-  }
-
-  stopNote(note) {
-    note.audioNode.disconnect(this.masterAudioNode);
+    this.currentNote.audioNode.play();
   }
 
   getPointAtRadius(cx, cy, radius) {
@@ -110,7 +95,7 @@ export default class {
 
       // play the note if it exists
       if (this.currentNote && this.targetNote) {
-        this.fire();
+        this.triggerNote();
 
         // Increment section progress
         sectionProgress++;
