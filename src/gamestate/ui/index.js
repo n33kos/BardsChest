@@ -10,7 +10,9 @@ export default class {
       play        : document.querySelectorAll('[data-gamestate-play]'),
       pause       : document.querySelectorAll('[data-gamestate-pause]'),
       restart     : document.querySelectorAll('[data-gamestate-restart]'),
+      fullscreen  : document.querySelectorAll('[data-nav="fullscreen"]'),
     };
+    this.isFullscreen = false;
   }
 
   init() {
@@ -37,6 +39,12 @@ export default class {
     Array.from(this.buttons.restart).forEach(button => {
       button.addEventListener('click', () => this.GameState.Game.restart() );
     });
+
+    //Fullscreen buttons
+    Array.from(this.buttons.fullscreen).forEach(button => {
+      button.addEventListener('click', () => this.toggleFullscreen() );
+    });
+
 
     // Quit buttons
     Array.from(this.buttons.quit).forEach(button => {
@@ -79,6 +87,38 @@ export default class {
         screen.classList.remove('active');
       }
     });
+  }
+
+  toggleFullscreen() {
+    const elem = document.documentElement;
+
+    /* View in fullscreen */
+    if(!this.isFullscreen) {
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+      } else if (elem.mozRequestFullScreen) { /* Firefox */
+        elem.mozRequestFullScreen();
+      } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+        elem.webkitRequestFullscreen();
+      } else if (elem.msRequestFullscreen) { /* IE/Edge */
+        elem.msRequestFullscreen();
+      }
+    }
+
+    /* Close fullscreen */
+    if(this.isFullscreen) {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.mozCancelFullScreen) { /* Firefox */
+        document.mozCancelFullScreen();
+      } else if (document.webkitExitFullscreen) { /* Chrome, Safari and Opera */
+        document.webkitExitFullscreen();
+      } else if (document.msExitFullscreen) { /* IE/Edge */
+        document.msExitFullscreen();
+      }
+    }
+
+    this.isFullscreen = !this.isFullscreen;
   }
 
   updateScore(score) {

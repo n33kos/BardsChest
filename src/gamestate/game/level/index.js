@@ -16,6 +16,7 @@ export default class {
     this.radius = radius;
     this.sections = sections;
     this.isLoaded = false;
+    this.notes = {};
   }
 
   testIsLoaded() {
@@ -39,15 +40,19 @@ export default class {
 
       // Load section notes
       section.notes.forEach(note => {
-        note.audioNode = new AudioBuffer({
-          audioContext    : this.audioContext,
-          audioFileUrl    : note.url,
-          masterAudioNode : this.masterAudioNode,
-        });
-        note.audioNode.load(this.testIsLoaded.bind(this));
+        if (note.url in this.notes) {
+          note = this.notes[note.url];
+          this.testIsLoaded.bind(this);
+        }else{
+          note.audioNode = new AudioBuffer({
+            audioContext    : this.audioContext,
+            audioFileUrl    : note.url,
+            masterAudioNode : this.masterAudioNode,
+          });
+          note.audioNode.load(this.testIsLoaded.bind(this));
+          this.notes[note.url] = note;
+        }
       })
     });
-
-    // Here we will load the level's note samples as well!
   }
 }

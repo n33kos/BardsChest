@@ -86,12 +86,12 @@ export default class {
       this.currentNote = tempNote.note;
 
       // add to section key
-      if (
-        section.unlockPattern[sectionKey.length] === tempNote.index
-        && areArraysIdentical(sectionKey, section.unlockPattern.slice(0, sectionKey.length))
-      ) {
+      if (section.unlockPattern[sectionKey.length] === tempNote.index) {
         sectionKey.push(tempNote.index);
       }
+
+      // Set trigger's nextnote
+      this.targetNote = section.notes[section.unlockPattern[sectionProgress]];
 
       // play the note if it exists
       if (this.currentNote && this.targetNote) {
@@ -101,9 +101,6 @@ export default class {
         sectionProgress++;
         if (sectionProgress >= section.unlockPattern.length) sectionProgress = 0;
       }
-
-      // Set trigger's nextnote
-      this.targetNote = section.notes[section.unlockPattern[sectionProgress]];
 
       this.setStartEndTimes(section.bpm);
 

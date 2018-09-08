@@ -14,13 +14,13 @@ export default class {
   init() {
     // Mouse
     const debouncedMouseMove = debounce(this.debounceValue, (e) => this.handleMouseMove(e));
-    document.body.addEventListener("mousemove", debouncedMouseMove);
-    document.body.addEventListener("mousedown", e => {
+    document.addEventListener("mousemove", debouncedMouseMove);
+    document.addEventListener("mousedown", e => {
       this.isMouseDown = true;
       this.oldMousePos = e.clientX;
       this.direction = e.clientY > this.Game.ctx.canvas.height/2 ? -1 : 1;
     });
-    document.body.addEventListener("mouseup", e => { this.isMouseDown = false; });
+    document.addEventListener("mouseup", e => { this.isMouseDown = false; });
 
     // Touch
     const debouncedTouchMove = debounce(this.debounceValue, (e) => this.handleTouchMove(e));
@@ -30,7 +30,7 @@ export default class {
       this.oldMousePos = e.targetTouches[0].clientX;
       this.direction = e.targetTouches[0].clientY > this.Game.ctx.canvas.height/2 ? -1 : 1;
     });
-    document.body.addEventListener("touchend", e => { this.isMouseDown = false; });
+    document.addEventListener("touchend", e => { this.isMouseDown = false; });
 
     // Keys
     document.onkeydown = this.handleKeyDown.bind(this);
@@ -38,6 +38,7 @@ export default class {
   }
 
   handleTouchMove(e) {
+    e.preventDefault();
     if (!this.isMouseDown || this.Game.isPaused) return;
 
     for (let i=0; i < e.targetTouches.length; i++) {

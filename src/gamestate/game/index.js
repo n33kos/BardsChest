@@ -20,7 +20,6 @@ export default class {
     this.mass = 8000;
     this.masterAudioNode = null;
     this.momentum = 0;
-    this.radius = Math.min(window.innerWidth / 3, window.innerHeight / 3);
     this.rotation = 0;
     this.sectionKey = [];
     this.section = null;
@@ -31,6 +30,9 @@ export default class {
     this.images = {
       center: {url : `${window.location.href}img/center.png`, image: null},
     };
+
+    this.setDimensions();
+    this.radius = Math.min(this.width / 3, this.height / 3);
 
     this.initCanvas();
     this.initAudio();
@@ -65,12 +67,14 @@ export default class {
     return oneBeatInMilliseconds(this.level.bpm);
   }
 
-  resizeCanvas(canvas) {
-    this.canvas.width = window.innerWidth;
-  	this.canvas.height = window.innerHeight;
-    this.cx = this.ctx.canvas.width/2;
-    this.cy = this.ctx.canvas.height/2;
-    this.radius = Math.min(window.innerWidth / 3, window.innerHeight / 3);
+  resizeCanvas() {
+    this.setDimensions();
+
+    this.canvas.width = this.width;
+  	this.canvas.height = this.height;
+    this.cx = this.width/2;
+    this.cy = this.height/2;
+    this.radius = Math.min(this.width / 3, this.height / 3);
   }
 
   physics() {
@@ -107,18 +111,30 @@ export default class {
 
   initCanvas() {
     let canvas = document.querySelector('canvas');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    canvas.width = this.width;
+    canvas.height = this.height;
 
     let ctx = canvas.getContext('2d');
-    this.cx = ctx.canvas.width/2;
-    this.cy = ctx.canvas.height/2;
+    this.cx = this.width/2;
+    this.cy = this.height/2;
     this.canvas = canvas;
     this.ctx = ctx;
 
+
     window.addEventListener('resize', () => {
+      this.setDimensions();
       this.resizeCanvas();
     });
+  }
+
+  setDimensions() {
+    this.width = window.innerWidth
+    || document.documentElement.clientWidth
+    || document.body.clientWidth;
+
+    this.height = window.innerHeight
+    || document.documentElement.clientHeight
+    || document.body.clientHeight;
   }
 
   initAudio() {
@@ -141,6 +157,7 @@ export default class {
       this.isRunning = true;
       this.audioRender();
       this.render();
+      this.uiRender();
     };
   }
 
@@ -157,16 +174,13 @@ export default class {
 
   loadLevel() {
     this.level = this.levels[this.GameState.level];
-    this.sectionSubtention = this.fullCircleRadian / this.level.sections[this.levelProgress].notes.length;
-    this.GameState.UI.updateBPM(this.level.bpm);
-    this.GameState.UI.updateLevel(this.levelProgress);
     this.level.load();
     this.loadSection();
   }
 
   loadSection() {
-    this.section = this.level.sections[this.levelProgress]
-    this.sectionSubtention = this.fullCircleRadian / this.level.sections[this.levelProgress].notes.length;
+    if (this.levelProgress < this.level.sections.length) this.section = this.level.sections[this.levelProgress];
+    this.sectionSubtention = this.fullCircleRadian / this.section.notes.length;
   }
 
   // --------------------Renders----------------
@@ -191,11 +205,11 @@ export default class {
     // Draw non-level specific elements
     this.drawGameObjects();
 
-    // Handle keypresses
-    this.control.handlePressedKeys();
-
     // Bail out early
     if(!this.shouldRenderGameplay(this.section)) return;
+
+    // Handle keypresses
+    this.control.handlePressedKeys();
 
     // Draw level specific elements
     this.section.notes.forEach((note, i) => {
@@ -231,21 +245,32 @@ export default class {
       );
       this.sectionProgress = mergeData.sectionProgress;
       this.GameState.score = Math.min(this.GameState.score - mergeData.score, 0);
-      this.GameState.UI.updateScore(this.GameState.score);
-
-      // Win condition!
-      if (this.levelProgress >= this.level.sections.length) {
-        this.GameState.UI.setScreen('score');
-        setTimeout(() => this.isPaused = true, 250);
-      }
-
-      // Section Complete condition!
-      if (areArraysIdentical(this.sectionKey, this.section.unlockPattern )) {
-        this.levelProgress++;
-        this.sectionKey = [];
-        this.sectionProgress = 0;
-        this.loadSection();
-      }
     });
+
+    // Section Complete condition!
+    if (areArraysIdentical(this.sectionKey, this.section.unlockPattern)) {
+      this.sectionKey = [];
+      this.sectionProgress = 0;
+      this.levelProgress++;
+      this.section.audioNode.stop();
+      this.loadSection();
+    }
+
+    // Win condition!
+    if (this.levelProgress >= this.level.sections.length) {
+      this.GameState.UI.setScreen('score');
+      this.momentum += 500 * this.deltaTime;
+    }
+  }
+
+  uiRender() {
+    setTimeout(this.uiRender.bind(this), 500);
+
+    // Bail out early
+    if(!this.shouldRenderGameplay(this.section)) return;
+
+    this.GameState.UI.updateBPM(this.level.bpm);
+    this.GameState.UI.updateLevel(this.levelProgress);
+    this.GameState.UI.updateScore(this.GameState.score);
   }
 }

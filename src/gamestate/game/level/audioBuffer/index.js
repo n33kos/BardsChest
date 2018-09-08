@@ -37,4 +37,8 @@ export default class {
     this.audioNode.connect(this.masterAudioNode);
     this.audioNode.start();
   }
+
+  stop() {
+    this.audioNode.stop();
+  }
 }
