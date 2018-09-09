@@ -26,7 +26,7 @@ export default class {
   triggerNote() {
     if (this.currentNote === null) return;
     this.currentNote.audioNode.play();
-    this.currentNote.radiusModifier = 20;
+    this.currentNote.radiusModifier = 5;
   }
 
   getPointAtRadius(cx, cy, radius) {
@@ -89,15 +89,15 @@ export default class {
     ctx.strokeStyle = 'rgba(255, 244, 216, 1)';
     ctx.arc(...pos, (dist - this.radius) * timeElapsedPercentage, 0, Math.PI*2);
     ctx.stroke();
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = 'rgba(255, 244, 216, 0.3)';
-    ctx.arc(...pos, Math.max(dist - this.radius - 50 * timeElapsedPercentage) * timeElapsedPercentage, 0, Math.PI*2, 0);
-    ctx.stroke();
-    ctx.lineWidth = 5;
-    ctx.strokeStyle = 'rgba(255, 244, 216, 0.1)';
-    ctx.arc(...pos, Math.max(dist - this.radius - 100 * timeElapsedPercentage) * timeElapsedPercentage, 0, Math.PI*2, 0);
-    ctx.stroke();
-    ctx.shadowBlur = 0;
+    // ctx.lineWidth = 2;
+    // ctx.strokeStyle = 'rgba(255, 244, 216, 0.3)';
+    // ctx.arc(...pos, Math.max(dist - this.radius - 50 * timeElapsedPercentage) * timeElapsedPercentage, 0, Math.PI*2, 0);
+    // ctx.stroke();
+    // ctx.lineWidth = 5;
+    // ctx.strokeStyle = 'rgba(255, 244, 216, 0.1)';
+    // ctx.arc(...pos, Math.max(dist - this.radius - 100 * timeElapsedPercentage) * timeElapsedPercentage, 0, Math.PI*2, 0);
+    // ctx.stroke();
+    // ctx.shadowBlur = 0;
   }
 
   audioRender(section, sectionProgress, sectionKey, rotation, updateIndicators, triggerCenterGlow) {

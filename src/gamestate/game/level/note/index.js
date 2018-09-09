@@ -21,8 +21,8 @@ export default class {
     let end = start + sectionSubtention;
 
     ctx.beginPath();
-    ctx.arc(cx, cy, this.radius - this.radiusModifier, (start - rotation), (end - rotation));
-    ctx.lineWidth = 10 + this.radiusModifier;
+    ctx.arc(cx, cy, this.radius + this.radiusModifier, (start - rotation), (end - rotation));
+    ctx.lineWidth = 10;
     ctx.strokeStyle = this.color;
 
     ctx.shadowColor = this.color;
@@ -33,8 +33,8 @@ export default class {
     ctx.stroke();
     ctx.shadowBlur = 0;
 
-    if (this.radiusModifier > 0.001) {
-      this.radiusModifier = Math.max(this.radiusModifier - 0.25, 0);
+    if (this.radiusModifier > 0.01) {
+      this.radiusModifier = Math.max(this.radiusModifier - 0.15, 0);
     }
   }
 }

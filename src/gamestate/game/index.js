@@ -98,7 +98,7 @@ export default class {
       this.ctx.resetTransform();
     }
 
-    if (this.images.centerGlow.image !== null && this.glowAlpha > 0.001) {
+    if (this.images.centerGlow.image !== null && this.glowAlpha > 0.01) {
       this.glowAlpha = Math.max(this.glowAlpha - 0.01, 0);
       this.ctx.globalAlpha = this.glowAlpha;
       this.ctx.translate(this.cx, this.cy);

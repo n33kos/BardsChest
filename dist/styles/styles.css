@@ -77,6 +77,10 @@ canvas {
   background-repeat: repeat-x;
   background-size: contain;
   border-radius: 8px;
+  border: solid 12px #606060;
+  border-image: linear-gradient(#aaa, #6c6c6c, #424244) 30;
+  border-top-width: 8px;
+  box-sizing: border-box;
   display: block;
   height: 50%;
   left: 0;
