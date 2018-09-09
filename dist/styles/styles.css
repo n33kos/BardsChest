@@ -14,15 +14,19 @@ body {
   padding: 0;
   position: fixed;
   width: 100%;
+
+  -ms-interpolation-mode: nearest-neighbor;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: pixelated;
 }
 
 canvas {
   display: block;
-  height: 100%;
+  height: 100vh;
   left: 0;
   position: fixed;
   top: 0;
-  width: 100%;
+  width: 100vw;
   z-index: 5;
   overflow: hidden;
 }
@@ -60,11 +64,11 @@ canvas {
   border-radius: 8px;
   display: block;
   height: 15vh;
-  left: 20px;
+  left: 0;
   position: fixed;
   top: 50%;
   transform: translateY(-50%);
-  width: calc(100% - 40px);
+  width: 100%;
   z-index: 3;
 }
 
@@ -75,10 +79,10 @@ canvas {
   border-radius: 8px;
   display: block;
   height: 50%;
-  left: 30px;
+  left: 0;
   position: fixed;
-  top: 30px;
-  width: calc(100% - 60px);
+  top: 0;
+  width: 100%;
   z-index: 2;
 }
 
@@ -90,8 +94,41 @@ canvas {
   bottom: 0;
   display: block;
   height: 50%;
-  left: 30px;
+  left: 0;
   position: fixed;
-  width: calc(100% - 60px);
+  width: 100%;
   z-index: 1;
+}
+
+.Indicators {
+  align-items: center;
+  bottom: 0;
+  display: flex;
+  height: 80px;
+  justify-content: center;
+  left: 50%;
+  position: fixed;
+  transform: translateX(-50%);
+  width: 80vw;
+  z-index: 3;
+}
+
+.Indicator {
+  background-color: #222;
+  border-radius: 50%;
+  height: 48px;
+  margin: 0 10px;
+  position: relative;
+  width: 48px;
+}
+
+.Indicator:after {
+  background-image: url('/dist/img/indicator.png');
+  background-size: cover;
+  content: '';
+  height: 48px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 48px;
 }

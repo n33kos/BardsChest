@@ -13,6 +13,7 @@ export default class {
     this.ctx = null;
     this.drag = 0.10;
     this.fullCircleRadian = Math.PI * 2;
+    this.glowAlpha = 0;
     this.isPaused = false;
     this.level = null;
     this.levels = [];
@@ -29,10 +30,11 @@ export default class {
     this.isRunning = false;
     this.images = {
       center: {url : `${window.location.href}img/center.png`, image: null},
+      centerGlow: {url : `${window.location.href}img/centerGlow.png`, image: null},
     };
 
     this.setDimensions();
-    this.radius = Math.min(this.width / 3, this.height / 3);
+    this.radius = Math.sqrt((this.width/2)*(this.width/2) + (this.height/2)*(this.height/2)) / 3;
 
     this.initCanvas();
     this.initAudio();
@@ -95,6 +97,20 @@ export default class {
       this.ctx.drawImage(this.images.center.image, -this.radius/2, -this.radius/2, this.radius, this.radius);
       this.ctx.resetTransform();
     }
+
+    if (this.images.centerGlow.image !== null && this.glowAlpha > 0.001) {
+      this.glowAlpha = Math.max(this.glowAlpha - 0.01, 0);
+      this.ctx.globalAlpha = this.glowAlpha;
+      this.ctx.translate(this.cx, this.cy);
+      this.ctx.rotate(-this.rotation);
+      this.ctx.drawImage(this.images.centerGlow.image, -this.radius/2, -this.radius/2, this.radius, this.radius);
+      this.ctx.resetTransform();
+      this.ctx.globalAlpha = 1;
+    }
+  }
+
+  triggerCenterGlow(value) {
+    this.glowAlpha = value;
   }
 
   // --------------------Inits----------------
@@ -181,6 +197,7 @@ export default class {
   loadSection() {
     if (this.levelProgress < this.level.sections.length) this.section = this.level.sections[this.levelProgress];
     this.sectionSubtention = this.fullCircleRadian / this.section.notes.length;
+    this.GameState.UI.updateIndicators(this.section.unlockPattern, this.sectionKey, this.section.notes);
   }
 
   // --------------------Renders----------------
@@ -242,6 +259,8 @@ export default class {
         this.sectionProgress,
         this.sectionKey,
         this.rotation,
+        this.GameState.UI.updateIndicators,
+        this.triggerCenterGlow.bind(this),
       );
       this.sectionProgress = mergeData.sectionProgress;
       this.GameState.score = Math.min(this.GameState.score - mergeData.score, 0);

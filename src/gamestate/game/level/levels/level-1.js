@@ -6,39 +6,58 @@ import Section     from '../section/index';
 
 export default args => {
   const level = new Level(args);
+  level.bpm = 110;
 
   const notes = [
     new Note({
       audioContext    : level.audioContext,
-      color           : 'yellow',
+      color           : '#7900ff',
       masterAudioNode : level.masterAudioNode,
       radius          : level.radius,
       url             : 'level-1/note-1.mp3',
     }),
     new Note({
       audioContext    : level.audioContext,
-      color           : 'green',
+      color           : '#0009ff',
       masterAudioNode : level.masterAudioNode,
       radius          : level.radius,
       url             : 'level-1/note-2.mp3',
     }),
     new Note({
       audioContext    : level.audioContext,
-      color           : 'blue',
+      color           : '#ad00ff',
       masterAudioNode : level.masterAudioNode,
       radius          : level.radius,
       url             : 'level-1/note-3.mp3',
     }),
     new Note({
       audioContext    : level.audioContext,
-      color           : 'indigo',
+      color           : '#008aff',
       masterAudioNode : level.masterAudioNode,
       radius          : level.radius,
       url             : 'level-1/note-4.mp3',
     }),
   ];
 
-  level.bpm = 110;
+  const noteTriggers = [
+    new NoteTrigger({
+      beats          : 16,
+      bpm            : level.bpm,
+      masterAudioNode: level.masterAudioNode,
+      position       : 0,
+      radius         : level.radius,
+      startDelay     : 0,
+    }),
+    new NoteTrigger({
+      beats          : 16,
+      bpm            : level.bpm,
+      masterAudioNode: level.masterAudioNode,
+      position       : Math.PI,
+      radius         : level.radius,
+      startDelay     : 8,
+    }),
+  ];
+
   level.sections = [
     new Section({
       audioContext : level.audioContext,
@@ -49,16 +68,7 @@ export default args => {
       unlockPattern : [1, 2, 3, 0],
       url : 'level-1/bg-1.mp3',
       notes,
-      noteTriggers : [
-        new NoteTrigger({
-          beats          : 8,
-          beatCounter    : 0,
-          masterAudioNode: level.masterAudioNode,
-          position       : -Math.PI*0.5,
-          radius         : level.radius,
-          startDelay     : 0,
-        }),
-      ],
+      noteTriggers,
     }),
     new Section({
       audioContext : level.audioContext,
@@ -69,16 +79,7 @@ export default args => {
       unlockPattern : [3, 0, 2, 1],
       url : 'level-1/bg-2.mp3',
       notes,
-      noteTriggers : [
-        new NoteTrigger({
-          beats          : 8,
-          beatCounter    : 0,
-          masterAudioNode: level.masterAudioNode,
-          position       : Math.PI,
-          radius         : level.radius,
-          startDelay     : 0,
-        }),
-      ],
+      noteTriggers,
     }),
     new Section({
       audioContext : level.audioContext,
@@ -92,11 +93,12 @@ export default args => {
       noteTriggers : [
         new NoteTrigger({
           beats          : 8,
-          beatCounter    : 0,
+          beatCounter    : 1,
+          bpm            : level.bpm,
           masterAudioNode: level.masterAudioNode,
           position       : -Math.PI*0.5,
           radius         : level.radius,
-          startDelay     : 0,
+          startDelay     : 8,
         }),
       ],
     }),
@@ -109,16 +111,7 @@ export default args => {
       unlockPattern : [1, 3, 0, 2],
       url : 'level-1/bg-4.mp3',
       notes,
-      noteTriggers : [
-        new NoteTrigger({
-          beats          : 8,
-          beatCounter    : 0,
-          masterAudioNode: level.masterAudioNode,
-          position       : Math.PI,
-          radius         : level.radius,
-          startDelay     : 0,
-        }),
-      ],
+      noteTriggers,
     }),
     new Section({
       audioContext : level.audioContext,
@@ -129,24 +122,7 @@ export default args => {
       unlockPattern : [1, 3, 1, 3],
       url : 'level-1/bg-5.mp3',
       notes,
-      noteTriggers : [
-        new NoteTrigger({
-          beats          : 8,
-          beatCounter    : 0,
-          masterAudioNode: level.masterAudioNode,
-          position       : -Math.PI*0.5,
-          radius         : level.radius,
-          startDelay     : 0,
-        }),
-        new NoteTrigger({
-          beats          : 8,
-          beatCounter    : 0,
-          masterAudioNode: level.masterAudioNode,
-          position       : Math.PI,
-          radius         : level.radius,
-          startDelay     : 4,
-        }),
-      ],
+      noteTriggers,
     }),
   ];
 

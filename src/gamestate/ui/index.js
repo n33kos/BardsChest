@@ -136,4 +136,22 @@ export default class {
   updateBPM(bpm) {
     document.querySelector('[data-ui="bpm"]').innerHTML = bpm;
   }
+
+  updateIndicators(unlockPattern, sectionKey, notes) {
+    const indicators = document.querySelector('.Indicators');
+    const length = unlockPattern.length;
+    indicators.innerHTML = null;
+
+    unlockPattern.forEach((noteIndex, index) => {
+      const div = document.createElement('div');
+      div.classList.add('Indicator');
+      div.style.backgroundColor = notes[noteIndex].color;
+
+      if (sectionKey[index] !== noteIndex) {
+        div.style.opacity = 0.35;
+      }
+
+      indicators.appendChild(div);
+    });
+  }
 }
