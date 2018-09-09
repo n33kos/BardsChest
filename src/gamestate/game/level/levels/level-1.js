@@ -79,7 +79,24 @@ export default args => {
       unlockPattern : [3, 0, 2, 1],
       url : 'level-1/bg-2.mp3',
       notes,
-      noteTriggers,
+      noteTriggers: [
+        new NoteTrigger({
+          beats          : 16,
+          bpm            : level.bpm,
+          masterAudioNode: level.masterAudioNode,
+          position       : 0,
+          radius         : level.radius,
+          startDelay     : 0,
+        }),
+        new NoteTrigger({
+          beats          : 16,
+          bpm            : level.bpm,
+          masterAudioNode: level.masterAudioNode,
+          position       : -Math.PI*0.5,
+          radius         : level.radius,
+          startDelay     : 8,
+        }),
+      ],
     }),
     new Section({
       audioContext : level.audioContext,
@@ -90,17 +107,7 @@ export default args => {
       unlockPattern : [1, 0, 2, 3],
       url : 'level-1/bg-3.mp3',
       notes,
-      noteTriggers : [
-        new NoteTrigger({
-          beats          : 8,
-          beatCounter    : 1,
-          bpm            : level.bpm,
-          masterAudioNode: level.masterAudioNode,
-          position       : -Math.PI*0.5,
-          radius         : level.radius,
-          startDelay     : 8,
-        }),
-      ],
+      noteTriggers,
     }),
     new Section({
       audioContext : level.audioContext,

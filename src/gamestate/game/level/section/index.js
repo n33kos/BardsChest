@@ -35,4 +35,7 @@ export default class {
     this.unlockPattern = unlockPattern;
     this.url = url;
   }
+
+  load() {
+  }
 }

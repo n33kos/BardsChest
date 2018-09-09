@@ -18,6 +18,7 @@ body {
   -ms-interpolation-mode: nearest-neighbor;
   image-rendering: -moz-crisp-edges;
   image-rendering: pixelated;
+  font-family: 'MedievalSharp', cursive;
 }
 
 canvas {
@@ -77,9 +78,9 @@ canvas {
   background-repeat: repeat-x;
   background-size: contain;
   border-radius: 8px;
-  border: solid 12px #606060;
-  border-image: linear-gradient(#aaa, #6c6c6c, #424244) 30;
-  border-top-width: 8px;
+  border: solid 12px #6c6c6c;
+  border-image: linear-gradient(#e0e0e0, #6c6c6c, #424244) 30;
+  border-top-width: 4px;
   box-sizing: border-box;
   display: block;
   height: 50%;

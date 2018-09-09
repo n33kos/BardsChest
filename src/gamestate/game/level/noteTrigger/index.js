@@ -15,25 +15,19 @@ export default class {
     this.beats = beats;
     this.bpm = bpm;
     this.currentNote = null;
+    this.duration = 0;
     this.masterAudioNode = masterAudioNode;
     this.position = position;
     this.radius = radius / 2;
     this.startDelay = startDelay;
     this.startTime = null;
-    this.setStartEndTimes(bpm);
+    this.setStartEndTimes(bpm, startDelay);
   }
 
   triggerNote() {
     if (this.currentNote === null) return;
     this.currentNote.audioNode.play();
     this.currentNote.radiusModifier = 5;
-  }
-
-  getPointAtRadius(cx, cy, radius) {
-    return {
-      x : cx + radius * Math.cos(this.position),
-      y : cy + radius * Math.sin(this.position),
-    };
   }
 
   loopValue(val, min, max) {
@@ -53,51 +47,40 @@ export default class {
   }
 
   setStartEndTimes(bpm) {
-    // set start and end times for next beat
     this.startTime = Date.now();
-    this.endTime = Date.now() + (oneBeatInMilliseconds(bpm) * this.beats);
+    this.endTime = this.startTime + (oneBeatInMilliseconds(bpm) * this.beats);
+    this.duration = this.endTime - this.startTime;
   }
 
-  getPositionOnScreenRomAngle(cx, cy, ctx) {
+  recalculateEndTime() {
+    //Recalculate End Time, this helps keep the animation on time when a section loads
+    this.endTime = Date.now() + (oneBeatInMilliseconds(this.bpm) * (this.beats - this.beatCounter + 1));
+  }
+
+  getPositionOnScreenFromAngle(cx, cy, ctx) {
     if (this.position === 0) return [ctx.canvas.width, cy];
     if (this.position === Math.PI) return [0, cy];
     if (this.position === -Math.PI*0.5) return [cx, 0];
     return [0, 0];
   }
 
+  load() {
+    this.recalculateEndTime();
+  }
+
   render(cx, cy, ctx) {
-    const duration = (this.endTime - this.startTime);
-    const timeElapsedPercentage = 1 - (this.endTime - Date.now()) / duration;
+    const timeElapsedPercentage = 1 - (this.endTime - Date.now()) / this.duration;
 
-    // const start = this.getPointAtRadius(cx, cy, this.radius);
-    // const finish = this.getPointAtRadius(cx, cy, ctx.canvas.height);
-    //
-    // const xpos = lerp(finish.x, start.x, timeElapsedPercentage);
-    // const ypos = lerp(finish.y, start.y, timeElapsedPercentage);
-
-    // ctx.beginPath();
-    // ctx.fillStyle = 'white';
-    // ctx.arc(xpos, ypos, 10, 0, Math.PI*2);
-    // ctx.fill();
-
-    const pos = this.getPositionOnScreenRomAngle(cx, cy, ctx);
+    const pos = this.getPositionOnScreenFromAngle(cx, cy, ctx);
     const dist = (this.position === 0 || this.position === Math.PI) ? cx : cy;
     ctx.beginPath();
+    ctx.shadowBlur = 10;
+    ctx.lineWidth = 2;
     ctx.shadowColor = 'rgba(255, 244, 216, 1)';
-    ctx.shadowBlur = 40;
-    ctx.lineWidth = 1;
     ctx.strokeStyle = 'rgba(255, 244, 216, 1)';
     ctx.arc(...pos, (dist - this.radius) * timeElapsedPercentage, 0, Math.PI*2);
     ctx.stroke();
-    // ctx.lineWidth = 2;
-    // ctx.strokeStyle = 'rgba(255, 244, 216, 0.3)';
-    // ctx.arc(...pos, Math.max(dist - this.radius - 50 * timeElapsedPercentage) * timeElapsedPercentage, 0, Math.PI*2, 0);
-    // ctx.stroke();
-    // ctx.lineWidth = 5;
-    // ctx.strokeStyle = 'rgba(255, 244, 216, 0.1)';
-    // ctx.arc(...pos, Math.max(dist - this.radius - 100 * timeElapsedPercentage) * timeElapsedPercentage, 0, Math.PI*2, 0);
-    // ctx.stroke();
-    // ctx.shadowBlur = 0;
+    ctx.shadowBlur = 0;
   }
 
   audioRender(section, sectionProgress, sectionKey, rotation, updateIndicators, triggerCenterGlow) {

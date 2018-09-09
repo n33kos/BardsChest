@@ -16,6 +16,9 @@ export default class {
     this.radiusModifier = 0;
   }
 
+  load() {
+  }
+
   render(cx, cy, ctx, i, sectionSubtention, rotation) {
     let start = sectionSubtention * i;
     let end = start + sectionSubtention;

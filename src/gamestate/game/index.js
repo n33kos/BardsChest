@@ -60,8 +60,19 @@ export default class {
   }
 
   togglePause() {
-    this.isPaused ? this.audioContext.resume() : this.audioContext.suspend();
     this.isPaused = !this.isPaused;
+
+    //Trigger events on unpause
+    if (!this.isPaused) {
+      this.audioContext.resume();
+      this.section.noteTriggers.forEach(trigger => trigger.recalculateEndTime());
+    }
+
+
+    //Trigger events on pause
+    if (this.isPaused) {
+      this.audioContext.suspend();
+    }
   }
 
   getAudioRenderFrequency() {
@@ -76,7 +87,14 @@ export default class {
   	this.canvas.height = this.height;
     this.cx = this.width/2;
     this.cy = this.height/2;
-    this.radius = Math.min(this.width / 3, this.height / 3);
+    this.radius = Math.sqrt((this.width/2)*(this.width/2) + (this.height/2)*(this.height/2)) / 3;
+
+    //Update radius for all notes and triggers
+    this.level.load(this.radius);
+    this.level.sections.forEach(section => {
+      section.noteTriggers.forEach(trigger => trigger.radius = this.radius / 2);
+      section.notes.forEach(note => note.radius = this.radius / 2);
+    });
   }
 
   physics() {
@@ -195,22 +213,35 @@ export default class {
   }
 
   loadSection() {
-    if (this.levelProgress < this.level.sections.length) this.section = this.level.sections[this.levelProgress];
+    // Set sectionProgress
+    if (this.levelProgress < this.level.sections.length) {
+      this.section = this.level.sections[this.levelProgress];
+    }
+
+    // Run Loader functions
+    this.section.load();
+    this.section.noteTriggers.forEach(trigger => trigger.load());
+    this.section.notes.forEach(note => note.load());
+
+    // Set local vars
     this.sectionSubtention = this.fullCircleRadian / this.section.notes.length;
     this.GameState.UI.updateIndicators(this.section.unlockPattern, this.sectionKey, this.section.notes);
   }
 
   // --------------------Renders----------------
-  shouldRenderGameplay(section) {
+  shouldRenderGameplay() {
     return !this.isPaused
     && this.level !== null
     && this.level.isLoaded === true
-    && section;
+    && this.section;
   }
 
   render() {
     // Request new frame
     window.requestAnimationFrame(this.render.bind(this));
+
+    // Bail out early
+    if(!this.shouldRenderGameplay()) return;
 
     // clear
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -221,9 +252,6 @@ export default class {
 
     // Draw non-level specific elements
     this.drawGameObjects();
-
-    // Bail out early
-    if(!this.shouldRenderGameplay(this.section)) return;
 
     // Handle keypresses
     this.control.handlePressedKeys();
@@ -243,7 +271,7 @@ export default class {
     setTimeout(this.audioRender.bind(this), this.getAudioRenderFrequency());
 
     // Bail out early
-    if(!this.shouldRenderGameplay(this.section)) return;
+    if(!this.shouldRenderGameplay()) return;
 
     // play background track
     this.section.beatCounter++;
@@ -286,7 +314,7 @@ export default class {
     setTimeout(this.uiRender.bind(this), 500);
 
     // Bail out early
-    if(!this.shouldRenderGameplay(this.section)) return;
+    if(!this.shouldRenderGameplay()) return;
 
     this.GameState.UI.updateBPM(this.level.bpm);
     this.GameState.UI.updateLevel(this.levelProgress);
