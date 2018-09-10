@@ -3,7 +3,7 @@ var webpack = require('webpack');
 
 module.exports = [
   {
-      entry: './src/heartstring.js',
+      entry: './src/bardschest.js',
       mode: 'production',
       module: {
           rules : [
@@ -18,8 +18,8 @@ module.exports = [
       },
       output: {
           path: path.resolve(__dirname, 'dist/js'),
-          filename: `heartstring.min.js`,
-          library: 'heartstring',
+          filename: `bardschest.min.js`,
+          library: 'bardschest',
           libraryTarget: 'umd',
           umdNamedDefine: true
       },

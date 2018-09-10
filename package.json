@@ -1,8 +1,8 @@
 {
-  "name": "heartstring",
+  "name": "bardschest",
   "version": "0.0.1",
   "description": "A Web Audio API game made for the 2018 itch.io music jam",
-  "main": "dist/js/heartstring.min.js",
+  "main": "dist/js/bardschest.min.js",
   "scripts": {
     "build": "webpack",
     "serve": "http-server"
