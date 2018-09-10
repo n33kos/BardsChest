@@ -98,9 +98,15 @@ export default class {
       // add to section key
       if (section.unlockPattern[sectionKey.length] === tempNote.index) {
         sectionKey.push(tempNote.index);
-        updateIndicators(section.unlockPattern, sectionKey, section.notes);
         triggerCenterGlow(1);
+        score = 10 * section.multiplier;
+        section.multiplier += 1;
+      }else{
+        score -= 10;
+        section.multiplier = 1;
+        sectionKey.pop();
       }
+      updateIndicators(section.unlockPattern, sectionKey, section.notes);
 
       // play the note if it exists
       if (this.currentNote) {
@@ -112,8 +118,6 @@ export default class {
       }
 
       this.setStartEndTimes(this.bpm);
-
-      score = 10;
     }
 
     return {score, sectionProgress};

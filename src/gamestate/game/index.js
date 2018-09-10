@@ -191,7 +191,6 @@ export default class {
       this.isRunning = true;
       this.audioRender();
       this.render();
-      this.uiRender();
     };
   }
 
@@ -208,6 +207,7 @@ export default class {
 
   loadLevel() {
     this.level = this.levels[this.GameState.level];
+    this.GameState.UI.updateBPM(this.level.bpm);
     this.level.load();
     this.loadSection();
   }
@@ -291,8 +291,9 @@ export default class {
         this.triggerCenterGlow.bind(this),
       );
       this.sectionProgress = mergeData.sectionProgress;
-      this.GameState.score = Math.min(this.GameState.score - mergeData.score, 0);
+      this.GameState.score = Math.max(0, this.GameState.score + mergeData.score);
     });
+    this.GameState.UI.updateScore(this.GameState.score);
 
     // Section Complete condition!
     if (areArraysIdentical(this.sectionKey, this.section.unlockPattern)) {
@@ -300,24 +301,15 @@ export default class {
       this.sectionProgress = 0;
       this.levelProgress++;
       this.section.audioNode.stop();
+      this.GameState.UI.updateLevel(`${this.levelProgress + 1}/${this.level.sections.length}`);
       this.loadSection();
     }
 
     // Win condition!
     if (this.levelProgress >= this.level.sections.length) {
       this.GameState.UI.setScreen('score');
-      this.momentum += 500 * this.deltaTime;
+      this.momentum += 5000 * this.deltaTime;
+      setTimeout(this.togglePause, oneBeatInMilliseconds(this.level.bpm) * 8);
     }
-  }
-
-  uiRender() {
-    setTimeout(this.uiRender.bind(this), 500);
-
-    // Bail out early
-    if(!this.shouldRenderGameplay()) return;
-
-    this.GameState.UI.updateBPM(this.level.bpm);
-    this.GameState.UI.updateLevel(this.levelProgress);
-    this.GameState.UI.updateScore(this.GameState.score);
   }
 }

@@ -1,7 +1,7 @@
 html {
   height: 100%;
   overflow: hidden;
-  position: fixed;
+  position: absolute;
   width: 100%;
 }
 
@@ -12,7 +12,7 @@ body {
   margin: 0;
   overflow: scroll;
   padding: 0;
-  position: fixed;
+  position: absolute;
   width: 100%;
 
   -ms-interpolation-mode: nearest-neighbor;
@@ -51,6 +51,7 @@ canvas {
   transform: translateX(-100%);
   transition: opacity 1s ease, transform 1s ease;
   width: 100%;
+  color: white;
 }
 
 .Screen.active {
@@ -58,8 +59,55 @@ canvas {
   transform: translateX(0);
 }
 
+.Screen[data-screen="game"] {
+  background-image: url(../img/popup.png);
+  background-position: top left;
+  background-size: cover;
+  height: 100px;
+  left: 10px;
+  padding: 14px;
+  position: fixed;
+  text-align: center;
+  top: 4px;
+  width: 100px;
+  opacity: 0.25;
+  user-select: none;
+}
+
+.Screen[data-screen="game"]:hover {
+  opacity: 1;
+}
+
+.Screen[data-screen="game"] > div {
+  margin: 3px 0px;
+}
+
+.Screen[data-screen="game"] > nav {
+  position: fixed;
+  bottom: 10px;
+  left: 0;
+  width: 128px;
+}
+
+.Screen[data-screen="score"] {
+  background-image: url('../img/centerGlowCropped.png');
+  background-position: bottom center;
+  background-size: cover;
+  transform: scale(0);
+}
+
+.Screen[data-screen="score"] > div {
+  text-align: center;
+  width: 100%;
+
+}
+
+.Screen[data-screen="score"].active {
+  transform: scale(1);
+}
+
 .Band {
-  background-image: url('/dist/img/fringe.png');
+  background-image: url('../img/fringe.png');
   background-repeat: repeat-x;
   background-size: contain;
   border-radius: 8px;
@@ -74,7 +122,7 @@ canvas {
 }
 
 .ChestTop {
-  background-image: url('/dist/img/woodtop.png');
+  background-image: url('../img/woodtop.png');
   background-repeat: repeat-x;
   background-size: contain;
   border-radius: 8px;
@@ -92,7 +140,7 @@ canvas {
 }
 
 .ChestBottom {
-  background-image: url('/dist/img/woodbottom.png');
+  background-image: url('../img/woodbottom.png');
   background-repeat: repeat-x;
   background-size: contain;
   border-radius: 8px;
@@ -128,7 +176,7 @@ canvas {
 }
 
 .Indicator:after {
-  background-image: url('/dist/img/indicator.png');
+  background-image: url('../img/indicator.png');
   background-size: cover;
   content: '';
   height: 48px;
@@ -136,4 +184,29 @@ canvas {
   position: absolute;
   top: 0;
   width: 48px;
+}
+
+.IconButton {
+  background-color: none;
+  background-color: transparent;
+  background-image: url('../img/pause.png');
+  background-position: center center;
+  background-size: contain;
+  border: none;
+  cursor: pointer;
+  height: 32px;
+  width: 32px;
+  outline: 0;
+}
+
+.IconButton[data-nav="pause"]{
+  background-image: url('../img/pause.png');
+}
+
+.IconButton[data-nav="fullscreen"]{
+  background-image: url('../img/fullscreen.png');
+}
+
+.IconButton[data-nav="restart"]{
+  background-image: url('../img/restart.png');
 }

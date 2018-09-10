@@ -18,10 +18,6 @@ export default class {
   init() {
     this.initListenters();
     this.setScreen('mainmenu');
-
-    this.updateScore();
-    this.updatePlayerName();
-    this.updateLevel();
   }
 
   initListenters() {
@@ -123,10 +119,6 @@ export default class {
 
   updateScore(score) {
     document.querySelector('[data-ui="score"]').innerHTML = score;
-  }
-
-  updatePlayerName() {
-    document.querySelector('[data-ui="playerName"]').innerHTML = this.GameState.playerName;
   }
 
   updateLevel(level) {

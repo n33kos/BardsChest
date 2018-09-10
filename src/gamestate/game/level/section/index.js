@@ -34,6 +34,7 @@ export default class {
     this.radius = radius;
     this.unlockPattern = unlockPattern;
     this.url = url;
+    this.multiplier = 1;
   }
 
   load() {
