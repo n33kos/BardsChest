@@ -150,17 +150,25 @@ canvas {
 }
 
 .Screen[data-screen="score"] {
-  background-image: url('../img/centerGlowCropped.png');
-  background-position: bottom center;
-  background-size: cover;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,0.7) 0%,rgba(0,0,0,0) 90%);
   -webkit-transform: scale(0);
           transform: scale(0);
+}
+
+.Screen[data-screen="score"]  .Score {
+  font-size: 40px;
+  position: absolute;
+  text-align: center;
+  top: 50%;
+  width: 100%;
+  color: black;
+  -webkit-transform: translateY(-50%);
+          transform: translateY(-50%);
 }
 
 .Screen[data-screen="score"] > div {
   text-align: center;
   width: 100%;
-
 }
 
 .Screen[data-screen="score"].active {
@@ -292,8 +300,19 @@ canvas {
   margin: 0 auto;
   padding: 30px;
   width: 400px;
+  max-width: 100%;
 }
 
 .Disclaimer a {
-  color: gold;
+  color: #fff5bf;
+}
+
+.GoldenHeart {
+  display: block;
+  margin: 0 auto;
+  position: relative;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+          transform: translateY(-50%);
+  width: 400px;
 }

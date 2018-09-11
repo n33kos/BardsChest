@@ -51,13 +51,25 @@ export default class {
   }
 
   restart() {
+    this.glowAlpha = 0;
+    this.isPaused = false;
     this.level = null;
     this.levelProgress = 0;
     this.momentum = 0;
     this.rotation = 0;
-    this.sectionProgress = 0;
     this.sectionKey = [];
+    this.section = null;
+    this.sectionProgress = 0;
+    this.deltaTime = 0;
+    this.lastUpdate = Date.now();
+    this.isFirstBeat = true;
+    this.GameState.score = 0;
     this.loadLevel();
+    
+    this.section.noteTriggers.forEach(trigger => {
+      trigger.beatCounter = trigger.beats - trigger.startDelay;
+      trigger.recalculateEndTime();
+    });
   }
 
   togglePause() {

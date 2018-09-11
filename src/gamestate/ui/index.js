@@ -118,7 +118,10 @@ export default class {
   }
 
   updateScore(score) {
-    document.querySelector('[data-ui="score"]').innerHTML = score;
+    const scores = document.querySelectorAll('[data-ui="score"]');
+    Array.from(scores).forEach(scoreElement => {
+      scoreElement.innerHTML = score;
+    });
   }
 
   updateLevel(level) {
