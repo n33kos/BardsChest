@@ -18,41 +18,43 @@
   <body>
     <div class="UserInterface">
       <div class="Screen" data-screen="mainmenu">
-        <img src="/img/logo.png" class="logo">
+        <img src="./img/logo.png" class="logo">
+        <button class="IconButton" data-nav="fullscreen"></button>
         <nav>
-          <button data-nav="play" data-target-screen="level">Play</button>
-          <button data-nav="about" data-target-screen="about">About</button>
-          <button data-nav="fullscreen">Fullscreen</button>
-          <button data-nav="mute">Mute</button>
-          <button data-nav="quit">Quit</button>
+          <button class="WoodButton" data-nav="play" data-target-screen="level">Play</button>
+          <button class="WoodButton" data-nav="about" data-target-screen="about">About</button>
         </nav>
       </div>
 
       <div class="Screen" data-screen="level">
+        <button class="IconButton" data-nav="fullscreen"></button>
+        <div>
+          Select Song:
+          <button class="IconButton LevelDown" data-gamestate-change-level="-1"></button>
+          <div class="Level" data-gamestate-level>Brave The Storm</div>
+          <button class="IconButton LevelUp" data-gamestate-change-level="1"></button>
+        </div>
         <nav>
-          <div>
-            Select Level:
-            <button data-gamestate-level="1">Level 1</button>
-            <button data-gamestate-level="2">Level 2</button>
-            <button data-gamestate-level="2">Level 3</button>
-          </div>
-          <div>
-            Select Difficulty:
-            <button data-gamestate-difficulty="1">Easy</button>
-            <button data-gamestate-difficulty="2">Medium</button>
-            <button data-gamestate-difficulty="3">hard</button>
-          </div>
-          <button data-nav="play" data-target-screen="game" data-gamestate-play>Play</button>
-          <button data-target-screen="mainmenu">Back</button>
+          <button class="WoodButton" data-nav="play" data-target-screen="game" data-gamestate-play>Play</button>
+          <button class="WoodButton" data-target-screen="mainmenu">Back</button>
         </nav>
       </div>
 
       <div class="Screen" data-screen="about">
         <div class="Disclaimer">
-          Words are in my not so humble opinion our most inexhaustible source of magic capable of both influencing injury and remedying it Of course it is happening inside your head Harry but why on earth should that mean it is not real The wand chooses the wizard, Give her hell from us Peeves Severus Snape Words are in my not so humble opinion our most inexhaustible source of magic capable of both influencing injury and remedying it I am what.
+          Bard's Chest is A Web Audio API game made for the <a href="https://itch.io/jam/musicgamejam2018" target="_blank">2018 itch.io music jam</a>.
+          <br><br>
+          The source code can be viewed on github here <a href="https://github.com/n33kos/BardsChest" target="_blank">https://github.com/n33kos/BardsChest</a>.
+          <br><br>
+          All music and graphics are made by <a href="http://suskitech.org" target="_blank">me</a>.
+          <br><br>
+          Thanks for playing!
+          <br><br>
+          &copy;Suskitech 2018, All Rights Reserved.
         </div>
+        <button class="IconButton" data-nav="fullscreen"></button>
         <nav>
-          <button data-target-screen="mainmenu">Back</button>
+          <button class="WoodButton" data-target-screen="mainmenu">Back</button>
         </nav>
       </div>
 

@@ -26,10 +26,11 @@ export default class {
     ctx.beginPath();
     ctx.arc(cx, cy, this.radius + this.radiusModifier, (start - rotation), (end - rotation));
     ctx.lineWidth = 10;
-    ctx.strokeStyle = this.color;
-
-    ctx.shadowColor = this.color;
     ctx.shadowBlur = 20;
+
+    ctx.strokeStyle = this.color;
+    ctx.shadowColor = this.color;
+
     ctx.shadowOffsetX = 0;
     ctx.shadowOffsetY = 0;
 

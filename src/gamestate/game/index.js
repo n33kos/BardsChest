@@ -28,6 +28,7 @@ export default class {
     this.deltaTime = 0;
     this.lastUpdate = Date.now();
     this.isRunning = false;
+    this.isFirstBeat = true;
     this.images = {
       center: {url : `${window.location.href}img/center.png`, image: null},
       centerGlow: {url : `${window.location.href}img/centerGlow.png`, image: null},
@@ -272,6 +273,11 @@ export default class {
 
     // Bail out early
     if(!this.shouldRenderGameplay()) return;
+
+    if (this.isFirstBeat) {
+      this.section.noteTriggers.forEach(trigger => trigger.recalculateEndTime());
+      this.isFirstBeat = false;
+    }
 
     // play background track
     this.section.beatCounter++;
