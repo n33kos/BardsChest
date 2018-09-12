@@ -61,6 +61,7 @@ export default class {
     if (this.position === 0) return [ctx.canvas.width, cy];
     if (this.position === Math.PI) return [0, cy];
     if (this.position === -Math.PI*0.5) return [cx, 0];
+    if (this.position === Math.PI*0.5) return [cx, ctx.canvas.height];
     return [0, 0];
   }
 

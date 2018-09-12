@@ -3,6 +3,7 @@ import Control               from './control/index';
 import oneBeatInMilliseconds from '../../utils/oneBeatInMilliseconds';
 
 import Level1                from './level/levels/level-1';
+import Level2                from './level/levels/level-2';
 
 export default class {
   constructor(GameState) {
@@ -65,7 +66,7 @@ export default class {
     this.isFirstBeat = true;
     this.GameState.score = 0;
     this.loadLevel();
-    
+
     this.section.noteTriggers.forEach(trigger => {
       trigger.beatCounter = trigger.beats - trigger.startDelay;
       trigger.recalculateEndTime();
@@ -148,6 +149,12 @@ export default class {
   importLevels() {
     this.levels.push(
       Level1({
+        audioContext    : this.audioContext,
+        GameState       : this.GameState,
+        masterAudioNode : this.masterAudioNode,
+        radius          : this.radius,
+      }),
+      Level2({
         audioContext    : this.audioContext,
         GameState       : this.GameState,
         masterAudioNode : this.masterAudioNode,

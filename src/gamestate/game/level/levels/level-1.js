@@ -7,6 +7,7 @@ import Section     from '../section/index';
 export default args => {
   const level = new Level(args);
   level.bpm = 110;
+  level.name = "Brave The Storm";
 
   const notes = [
     new Note({
