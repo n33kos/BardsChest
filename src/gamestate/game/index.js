@@ -4,6 +4,7 @@ import oneBeatInMilliseconds from '../../utils/oneBeatInMilliseconds';
 
 import Level1                from './level/levels/level-1';
 import Level2                from './level/levels/level-2';
+import Level3                from './level/levels/level-3';
 
 export default class {
   constructor(GameState) {
@@ -155,6 +156,12 @@ export default class {
         radius          : this.radius,
       }),
       Level2({
+        audioContext    : this.audioContext,
+        GameState       : this.GameState,
+        masterAudioNode : this.masterAudioNode,
+        radius          : this.radius,
+      }),
+      Level3({
         audioContext    : this.audioContext,
         GameState       : this.GameState,
         masterAudioNode : this.masterAudioNode,
@@ -326,7 +333,7 @@ export default class {
       this.sectionProgress = 0;
       this.levelProgress++;
       this.section.audioNode.stop();
-      this.GameState.UI.updateLevel(`${this.levelProgress + 1}/${this.level.sections.length}`);
+      this.GameState.UI.updateLevel(this.level.name);
       this.loadSection();
     }
 

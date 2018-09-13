@@ -11,6 +11,7 @@ export default class {
       pause       : document.querySelectorAll('[data-gamestate-pause]'),
       restart     : document.querySelectorAll('[data-gamestate-restart]'),
       fullscreen  : document.querySelectorAll('[data-nav="fullscreen"]'),
+      level       : document.querySelectorAll('[data-gamestate-change-level]'),
     };
     this.isFullscreen = false;
   }
@@ -41,6 +42,16 @@ export default class {
       button.addEventListener('click', () => this.toggleFullscreen() );
     });
 
+    //Level selection buttons
+    Array.from(this.buttons.level).forEach(button => {
+      button.addEventListener('click', (e) => {
+        this.GameState.level += parseInt(e.target.dataset.gamestateChangeLevel, 10);
+        console.log(this.GameState.level, this.GameState.Game.levels[this.GameState.level]);
+        if (this.GameState.level >= this.GameState.Game.levels.length) this.GameState.level = 0;
+        if (this.GameState.level < 0) this.GameState.level = this.GameState.Game.levels.length;
+        this.updateLevel(this.GameState.Game.levels[this.GameState.level].name);
+      });
+    });
 
     // Quit buttons
     Array.from(this.buttons.quit).forEach(button => {
