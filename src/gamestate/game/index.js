@@ -58,33 +58,17 @@ export default class {
   restart() {
     const response = confirm("Are you sure you want to exit the level?");
     if (response == true) {
-      this.section.audioNode.stop();
+      if (!this.isPaused) this.togglePause();
 
-      this.section.notes.forEach(note => {
-        note.audioNode.stop();
-      });
-
-      this.section.noteTriggers.forEach(trigger => {
-        trigger.beatCounter = trigger.beats - trigger.startDelay;
-        trigger.recalculateEndTime();
-      });
-
-      this.glowAlpha = 0;
-      this.isPaused = false;
-      this.isRunning = false;
       this.levelProgress = 0;
-      this.momentum = 0;
-      this.rotation = 0;
       this.section = null;
       this.level = null;
-      this.sectionKey = [];
-      this.sectionProgress = 0;
-      this.deltaTime = 0;
-      this.lastUpdate = Date.now();
+      this.sectionProgress = 0 ;
       this.isFirstBeat = true;
       this.GameState.score = 0;
-      this.loadLevel();
+      this.levels = [];
 
+      this.importLevels();
       this.GameState.UI.setScreen('level');
     }
   }
@@ -158,6 +142,25 @@ export default class {
 
   triggerCenterGlow(value) {
     this.glowAlpha = value;
+  }
+
+  winCondition() {
+    if (this.levelProgress >= this.level.sections.length) {
+      this.GameState.UI.setScreen('score');
+      this.momentum += 5000 * this.deltaTime;
+      this.togglePause();
+    }
+  }
+
+  sectionCompleteCondition() {
+    if (areArraysIdentical(this.sectionKey, this.section.unlockPattern)) {
+      this.section.audioNode.stop();
+      this.sectionKey = [];
+      this.sectionProgress = 0;
+      this.levelProgress++;
+      this.GameState.UI.updateLevel(this.level);
+      this.loadSection();
+    }
   }
 
   // --------------------Inits----------------
@@ -314,6 +317,12 @@ export default class {
     // Bail out early
     if(!this.shouldRenderGameplay()) return;
 
+    // Section Complete condition!
+    this.sectionCompleteCondition();
+
+    // Win condition!
+    this.winCondition();
+
     // play background track
     this.section.beatCounter++;
     if(this.section.beatCounter > this.section.beats) {
@@ -342,22 +351,5 @@ export default class {
       });
       this.GameState.UI.updateScore(this.GameState.score);
     });
-
-    // Section Complete condition!
-    if (areArraysIdentical(this.sectionKey, this.section.unlockPattern)) {
-      this.section.audioNode.stop();
-      this.sectionKey = [];
-      this.sectionProgress = 0;
-      this.levelProgress++;
-      this.GameState.UI.updateLevel(this.level);
-      this.loadSection();
-    }
-
-    // Win condition!
-    if (this.levelProgress >= this.level.sections.length) {
-      this.GameState.UI.setScreen('score');
-      this.momentum += 5000 * this.deltaTime;
-      this.togglePause();
-    }
   }
 }

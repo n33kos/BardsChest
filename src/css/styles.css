@@ -12,7 +12,7 @@ body {
   height: 100%;
   image-rendering: pixelated;
   margin: 0;
-  overflow: scroll;
+  overflow: auto;
   padding: 0;
   position: absolute;
   width: 100%;
@@ -74,7 +74,7 @@ canvas {
   height: 100vh;
   left: 0;
   opacity: 0;
-  overflow: scroll;
+  overflow: auto;
   position: fixed;
   top: 0;
   transform: translateY(-100%);
@@ -98,7 +98,7 @@ canvas {
 
 .Screen[data-screen="mainmenu"] > nav,
 .Screen[data-screen="level"] > nav,
-.Screen[data-screen="about"] > nav
+.Screen[data-screen="about"] > nav,
 .Screen[data-screen="score"] > nav {
   background-color: rgba(0, 0, 0, 0.7);
   background-size: cover;
@@ -304,18 +304,12 @@ canvas {
   width: 400px;
 }
 
-
-.Screen[data-screen="level"] h2 {
-  font-size: 44px;
-  text-align: center;
-  width: 100%;
-}
-
 .LevelSelect {
   align-items: center;
   display: flex;
   justify-content: center;
   margin: 0 auto;
+  margin-top: 30px;
   max-width: 420px;
   width: 100%;
 }
