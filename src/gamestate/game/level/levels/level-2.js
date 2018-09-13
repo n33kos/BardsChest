@@ -8,6 +8,7 @@ export default args => {
   const level = new Level(args);
   level.bpm = 120;
   level.name = "Open The Gates";
+  level.difficulty = 3;
 
   const notes = [
     new Note({

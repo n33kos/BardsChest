@@ -46,10 +46,10 @@ export default class {
     Array.from(this.buttons.level).forEach(button => {
       button.addEventListener('click', (e) => {
         this.GameState.level += parseInt(e.target.dataset.gamestateChangeLevel, 10);
-        console.log(this.GameState.level, this.GameState.Game.levels[this.GameState.level]);
         if (this.GameState.level >= this.GameState.Game.levels.length) this.GameState.level = 0;
         if (this.GameState.level < 0) this.GameState.level = this.GameState.Game.levels.length;
-        this.updateLevel(this.GameState.Game.levels[this.GameState.level].name);
+
+        this.updateLevel(this.GameState.Game.levels[this.GameState.level]);
       });
     });
 
@@ -136,7 +136,15 @@ export default class {
   }
 
   updateLevel(level) {
-    document.querySelector('[data-ui="level"]').innerHTML = level;
+    Array.from(document.querySelectorAll('[data-ui="level"]')).forEach(levelElement => {
+      levelElement.innerHTML = level.name;
+    });
+
+    const difficulty = document.querySelector('[data-ui="levelDifficulty"]');
+    for (var i = 1; i < 6; i++) {
+      difficulty.classList.remove(`difficulty-${i}`);
+    }
+    difficulty.classList.add(`difficulty-${level.difficulty}`);
   }
 
   updateBPM(bpm) {

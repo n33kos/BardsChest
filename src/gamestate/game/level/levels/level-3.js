@@ -8,6 +8,7 @@ export default args => {
   const level = new Level(args);
   level.bpm = 130;
   level.name = "Wind The Clock";
+  level.difficulty = 5;
 
   const notes = [
     new Note({

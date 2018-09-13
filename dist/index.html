@@ -18,7 +18,9 @@
   <body>
     <div class="UserInterface">
       <div class="Screen" data-screen="mainmenu">
-        <img src="./img/logo.png" class="logo">
+        <h1>
+          <img src="./img/logo.png" class="logo" alt="Bard's Chest">
+        </h1>
         <button class="IconButton" data-nav="fullscreen"></button>
         <nav>
           <button class="WoodButton" data-nav="play" data-target-screen="level">Play</button>
@@ -28,11 +30,18 @@
 
       <div class="Screen" data-screen="level">
         <button class="IconButton" data-nav="fullscreen"></button>
-        <div>
-          Select Song:
+        <h2>Select Song:</h2>
+        <div class="LevelSelect">
           <button class="IconButton LevelDown" data-gamestate-change-level="-1"></button>
           <div class="Level" data-ui="level">Brave The Storm</div>
           <button class="IconButton LevelUp" data-gamestate-change-level="1"></button>
+        </div>
+        <div class="LevelDifficulty difficulty-1" data-ui="levelDifficulty">
+          <span class="Star"></span>
+          <span class="Star"></span>
+          <span class="Star"></span>
+          <span class="Star"></span>
+          <span class="Star"></span>
         </div>
         <nav>
           <button class="WoodButton" data-nav="play" data-target-screen="game" data-gamestate-play>Play</button>
@@ -41,14 +50,18 @@
       </div>
 
       <div class="Screen" data-screen="about">
-        <div class="Disclaimer">
+        <div class="GameInfo">
           Bard's Chest is A Web Audio API game made for the <a href="https://itch.io/jam/musicgamejam2018" target="_blank">2018 itch.io music jam</a>.
           <br><br>
           The source code can be viewed on github here <a href="https://github.com/n33kos/BardsChest" target="_blank">https://github.com/n33kos/BardsChest</a>.
           <br><br>
-          All music and graphics are made by <a href="http://suskitech.org" target="_blank">me</a>.
+          Graphics made using <a href="https://www.apple.com/mac/garageband/" target="_blank">Aseprite</a>. Go support this program, it's the best pixel art suite I've found yet!
           <br><br>
-          Thanks for playing!
+          Music made in good ol&rsquo; <a href="https://www.apple.com/mac/garageband/" target="_blank">Garageband</a>.
+          <br><br>
+          Open source font from <a href="https://fonts.google.com/specimen/MedievalSharp" target="_blank">Google Fonts</a>
+          <br><br>
+          Hi, I'm a software engineer and independent game developer working out of Denver Colorado. All music and graphics for this project were made by <a href="http://suskitech.org" target="_blank">me</a>. Thanks for playing!
           <br><br>
           &copy;Suskitech 2018, All Rights Reserved.
         </div>
@@ -59,13 +72,15 @@
       </div>
 
       <div class="Screen" data-screen="game">
-        <div class="Score">Score: <span data-ui="score">0</span></div>
-        <div class="Level">Section: <span data-ui="level">Brave The Storm</span></div>
-        <div class="BPM">BPM: <span data-ui="bpm">100</span></div>
+        <div class="DetailsCard">
+          <div class="Level"><span data-ui="level">Brave The Storm</span></div>
+          <div class="BPM">BPM: <span data-ui="bpm">100</span></div>
+          <div class="Score">Score: <span data-ui="score">0</span></div>
+        </div>
         <nav>
-          <button class="IconButton" data-nav="restart" data-gamestate-restart></button>
-          <button class="IconButton" data-nav="fullscreen"></button>
           <button class="IconButton" data-nav="pause" data-gamestate-pause></button>
+          <button class="IconButton" data-nav="fullscreen"></button>
+          <button class="IconButton" data-nav="restart" data-gamestate-restart></button>
         </nav>
       </div>
 
@@ -73,9 +88,10 @@
         <img src="./img/GoldenHeart.gif" class="GoldenHeart">
         <span class="Score" data-ui="score">0</span>
         <nav>
-          <button data-nav="next">Next Level</button>
-          <button data-nav="back">Main Menu</button>
-          <button data-nav="restart" data-gamestate-restart>Restart</button>
+          <button class="IconButton" data-nav="fullscreen"></button>
+
+          <button class="WoodButton" data-nav="play" data-target-screen="game" data-gamestate-play>Replay</button>
+          <button class="WoodButton" data-target-screen="level">Back</button>
         </nav>
       </div>
     </div>

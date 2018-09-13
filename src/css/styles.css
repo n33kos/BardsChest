@@ -89,6 +89,7 @@ canvas {
 
 .Screen[data-screen="mainmenu"] .IconButton,
 .Screen[data-screen="about"] .IconButton,
+.Screen[data-screen="score"] .IconButton,
 .Screen[data-screen="level"] .IconButton:not(.LevelUp):not(.LevelDown) {
   right: 15px;
   position: fixed;
@@ -97,7 +98,8 @@ canvas {
 
 .Screen[data-screen="mainmenu"] > nav,
 .Screen[data-screen="level"] > nav,
-.Screen[data-screen="about"] > nav {
+.Screen[data-screen="about"] > nav
+.Screen[data-screen="score"] > nav {
   background-color: rgba(0, 0, 0, 0.7);
   background-size: cover;
   border-radius: 40px;
@@ -110,34 +112,35 @@ canvas {
   margin-top: 30px;
 }
 
-.Screen[data-screen="game"] {
+.DetailsCard {
   background-image: url('../img/popup.png');
   background-position: top left;
   background-size: cover;
   height: 100px;
   left: 10px;
+  opacity: 0.25;
   padding: 14px;
   position: fixed;
   text-align: center;
   top: 4px;
-  width: 100px;
-  opacity: 0.25;
+  transition: opacity 1s ease, transform 1s ease;
   user-select: none;
+  width: 100px;
 }
 
-.Screen[data-screen="game"]:hover {
+.DetailsCard:hover {
   opacity: 1;
 }
 
-.Screen[data-screen="game"] > div {
-  margin: 3px 0px;
+.DetailsCard > div {
+  margin: 5px 0px;
 }
 
 .Screen[data-screen="game"] > nav {
   position: fixed;
-  bottom: 10px;
-  left: 0;
-  width: 128px;
+  right: 10px;
+  top: 8px;
+  width: 110px;
 }
 
 .Screen[data-screen="score"] {
@@ -279,16 +282,16 @@ canvas {
   background-image: url('../img/play.png');
 }
 
-.Disclaimer {
+.GameInfo {
   color: white;
   font-size: 26px;
   margin: 0 auto;
   padding: 30px;
-  width: 400px;
+  width: 600px;
   max-width: 100%;
 }
 
-.Disclaimer a {
+.GameInfo a {
   color: #fff5bf;
 }
 
@@ -299,4 +302,57 @@ canvas {
   top: 50%;
   transform: translateY(-50%);
   width: 400px;
+}
+
+
+.Screen[data-screen="level"] h2 {
+  font-size: 44px;
+  text-align: center;
+  width: 100%;
+}
+
+.LevelSelect {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+  max-width: 420px;
+  width: 100%;
+}
+
+.LevelSelect .Level {
+  color: #fff5bf;
+  font-size: 34px;
+  margin: 20px;
+  text-align: center;
+}
+
+.LevelDifficulty {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+  max-width: 420px;
+  width: 100%;
+}
+
+.LevelDifficulty .Star {
+  background-image: url('../img/star.png');
+  background-size: cover;
+  height: 48px;
+  margin: 5px;
+  opacity: 0.25;
+  transition: opacity 0.7s ease;
+  width: 48px;
+}
+
+.LevelDifficulty.difficulty-1 .Star:nth-child(1),
+.LevelDifficulty.difficulty-2 .Star:nth-child(1),
+.LevelDifficulty.difficulty-2 .Star:nth-child(2),
+.LevelDifficulty.difficulty-3 .Star:nth-child(1),
+.LevelDifficulty.difficulty-3 .Star:nth-child(2),
+.LevelDifficulty.difficulty-3 .Star:nth-child(3),
+.LevelDifficulty.difficulty-4 .Star:not(:nth-child(5)),
+.LevelDifficulty.difficulty-5 .Star {
+  opacity: 1;
 }
