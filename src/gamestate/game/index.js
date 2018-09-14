@@ -2,6 +2,7 @@ import areArraysIdentical    from '../../utils/areArraysIdentical';
 import Control               from './control/index';
 import defer                 from '../../utils/defer';
 import oneBeatInMilliseconds from '../../utils/oneBeatInMilliseconds';
+import { throttle }          from 'throttle-debounce';
 
 import Level1                from './level/levels/level-1';
 import Level2                from './level/levels/level-2';
@@ -58,17 +59,7 @@ export default class {
   restart() {
     const response = confirm("Are you sure you want to exit the level?");
     if (response == true) {
-      if (!this.isPaused) this.togglePause();
-
-      this.levelProgress = 0;
-      this.section = null;
-      this.level = null;
-      this.sectionProgress = 0 ;
-      this.isFirstBeat = true;
-      this.GameState.score = 0;
-      this.levels = [];
-
-      this.importLevels();
+      this.endlevel();
       this.GameState.UI.setScreen('level');
     }
   }
@@ -102,11 +93,13 @@ export default class {
     this.cy = this.height/2;
     this.radius = Math.sqrt((this.width/2)*(this.width/2) + (this.height/2)*(this.height/2)) / 3;
 
-    //Update radius for all notes and triggers
-    this.level.load(this.radius);
-    this.level.sections.forEach(section => {
-      section.noteTriggers.forEach(trigger => trigger.radius = this.radius / 2);
-      section.notes.forEach(note => note.radius = this.radius / 2);
+    //Update radius for all levles, sections, notes, and triggers
+    this.levels.forEach(level => {
+      level.radius = this.radius;
+      level.sections.forEach(section => {
+        section.noteTriggers.forEach(trigger => trigger.radius = this.radius / 2);
+        section.notes.forEach(note => note.radius = this.radius / 2);
+      });
     });
   }
 
@@ -146,21 +139,41 @@ export default class {
 
   winCondition() {
     if (this.levelProgress >= this.level.sections.length) {
+      this.endlevel();
       this.GameState.UI.setScreen('score');
-      this.momentum += 5000 * this.deltaTime;
-      this.togglePause();
+
+      return true;
     }
+    return false;
   }
 
   sectionCompleteCondition() {
     if (areArraysIdentical(this.sectionKey, this.section.unlockPattern)) {
-      this.section.audioNode.stop();
       this.sectionKey = [];
       this.sectionProgress = 0;
       this.levelProgress++;
       this.GameState.UI.updateLevel(this.level);
       this.loadSection();
     }
+  }
+
+  endlevel() {
+    console.log('level ended!');
+    this.section.audioNode.stop();
+
+    this.section = null;
+    this.level = null;
+    this.isFirstBeat = true;
+    this.isRunning = false;
+    this.isPaused = true;
+    this.GameState.score = 0;
+    this.momentum += 5000 * this.deltaTime;
+    this.sectionProgress = 0;
+    this.levelProgress = 0;
+    this.score = 0;
+
+    this.levels = [];
+    this.importLevels();
   }
 
   // --------------------Inits----------------
@@ -199,10 +212,10 @@ export default class {
     this.ctx = ctx;
 
 
-    window.addEventListener('resize', () => {
+    window.addEventListener('resize', throttle(200, () => {
       this.setDimensions();
       this.resizeCanvas();
-    });
+    }));
   }
 
   setDimensions() {
@@ -257,6 +270,8 @@ export default class {
   }
 
   loadSection() {
+    if (this.section) this.section.audioNode.stop();
+
     // Set sectionProgress
     if (this.levelProgress < this.level.sections.length) {
       this.section = this.level.sections[this.levelProgress];
@@ -317,11 +332,27 @@ export default class {
     // Bail out early
     if(!this.shouldRenderGameplay()) return;
 
+    // Render NoteTrigger
+    this.section.noteTriggers.forEach(trigger => {
+      const mergeData = trigger.audioRender(
+        this.section,
+        this.sectionProgress,
+        this.sectionKey,
+        this.rotation,
+        this.GameState.UI.updateIndicators,
+        this.triggerCenterGlow.bind(this),
+      );
+      this.sectionProgress = mergeData.sectionProgress;
+      this.GameState.score = Math.max(0, this.GameState.score + mergeData.score * this.level.difficulty);
+    });
+    this.GameState.UI.updateScore(this.GameState.score);
+
     // Section Complete condition!
     this.sectionCompleteCondition();
 
     // Win condition!
-    this.winCondition();
+    const isLevelComplete = this.winCondition();
+    if (isLevelComplete) return;
 
     // play background track
     this.section.beatCounter++;
@@ -334,22 +365,5 @@ export default class {
       this.section.noteTriggers.forEach(trigger => trigger.recalculateEndTime());
       this.isFirstBeat = false;
     }
-
-    // Render NoteTrigger
-    defer(() => {
-      this.section.noteTriggers.forEach(trigger => {
-        const mergeData = trigger.audioRender(
-          this.section,
-          this.sectionProgress,
-          this.sectionKey,
-          this.rotation,
-          this.GameState.UI.updateIndicators,
-          this.triggerCenterGlow.bind(this),
-        );
-        this.sectionProgress = mergeData.sectionProgress;
-        this.GameState.score = Math.max(0, this.GameState.score + mergeData.score * this.level.difficulty);
-      });
-      this.GameState.UI.updateScore(this.GameState.score);
-    });
   }
 }

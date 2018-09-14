@@ -82,6 +82,26 @@ export default args => {
   ];
 
   level.sections = [
+    // Lead-in Section
+    new Section({
+      audioContext : level.audioContext,
+      beats : 32,
+      beatCounter : 32,
+      bpm : level.bpm,
+      masterAudioNode : level.masterAudioNode,
+      unlockPattern : [0, 0, 0, 0],
+      url : '',
+      notes : [
+        new Note({
+          audioContext    : level.audioContext,
+          color           : '#fff5bf',
+          masterAudioNode : level.masterAudioNode,
+          radius          : level.radius,
+          url             : 'click.mp3',
+        })
+      ],
+      noteTriggers,
+    }),
     new Section({
       audioContext : level.audioContext,
       beats : 32,

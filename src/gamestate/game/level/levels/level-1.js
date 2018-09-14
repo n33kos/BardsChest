@@ -13,28 +13,28 @@ export default args => {
   const notes = [
     new Note({
       audioContext    : level.audioContext,
-      color           : '#7900ff',
+      color           : 'red',
       masterAudioNode : level.masterAudioNode,
       radius          : level.radius,
       url             : 'level-1/note-1.mp3',
     }),
     new Note({
       audioContext    : level.audioContext,
-      color           : '#0009ff',
+      color           : 'orange',
       masterAudioNode : level.masterAudioNode,
       radius          : level.radius,
       url             : 'level-1/note-2.mp3',
     }),
     new Note({
       audioContext    : level.audioContext,
-      color           : '#ad00ff',
+      color           : 'yellow',
       masterAudioNode : level.masterAudioNode,
       radius          : level.radius,
       url             : 'level-1/note-3.mp3',
     }),
     new Note({
       audioContext    : level.audioContext,
-      color           : '#008aff',
+      color           : 'blue',
       masterAudioNode : level.masterAudioNode,
       radius          : level.radius,
       url             : 'level-1/note-4.mp3',
@@ -43,7 +43,7 @@ export default args => {
 
   const noteTriggers = [
     new NoteTrigger({
-      beats          : 16,
+      beats          : 32,
       bpm            : level.bpm,
       masterAudioNode: level.masterAudioNode,
       position       : 0,
@@ -51,23 +51,59 @@ export default args => {
       startDelay     : 0,
     }),
     new NoteTrigger({
-      beats          : 16,
+      beats          : 32,
       bpm            : level.bpm,
       masterAudioNode: level.masterAudioNode,
       position       : Math.PI,
       radius         : level.radius,
       startDelay     : 8,
     }),
+    new NoteTrigger({
+      beats          : 32,
+      bpm            : level.bpm,
+      masterAudioNode: level.masterAudioNode,
+      position       : 0,
+      radius         : level.radius,
+      startDelay     : 16,
+    }),
+    new NoteTrigger({
+      beats          : 32,
+      bpm            : level.bpm,
+      masterAudioNode: level.masterAudioNode,
+      position       : Math.PI,
+      radius         : level.radius,
+      startDelay     : 24,
+    }),
   ];
 
   level.sections = [
+    // Lead-in Section
+    new Section({
+      audioContext : level.audioContext,
+      beats : 16,
+      beatCounter : 16,
+      bpm : level.bpm,
+      masterAudioNode : level.masterAudioNode,
+      unlockPattern : [0, 0],
+      url : '',
+      notes : [
+        new Note({
+          audioContext    : level.audioContext,
+          color           : '#fff5bf',
+          masterAudioNode : level.masterAudioNode,
+          radius          : level.radius,
+          url             : 'click.mp3',
+        })
+      ],
+      noteTriggers,
+    }),
     new Section({
       audioContext : level.audioContext,
       beats : 32,
       beatCounter : 32,
       bpm : level.bpm,
       masterAudioNode : level.masterAudioNode,
-      unlockPattern : [1, 2, 3, 0],
+      unlockPattern : [1, 2],
       url : 'level-1/bg-1.mp3',
       notes,
       noteTriggers,

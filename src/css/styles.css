@@ -156,6 +156,7 @@ canvas {
   width: 100%;
   color: black;
   transform: translateY(-50%);
+  z-index: 2;
 }
 
 .Screen[data-screen="score"] > div {
@@ -165,6 +166,14 @@ canvas {
 
 .Screen[data-screen="score"].active {
   transform: scale(1);
+}
+
+.Screen[data-screen="score"] > nav {
+    left: 50%;
+    margin: 0;
+    position: fixed;
+    transform: translateX(-50%);
+    z-index: 3;
 }
 
 .Band {
@@ -216,9 +225,10 @@ canvas {
 
 .Indicators {
   align-items: center;
-  bottom: 0;
+  bottom: 20px;
   display: flex;
-  height: 80px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
   justify-content: center;
   left: 50%;
   position: fixed;
@@ -298,6 +308,7 @@ canvas {
 .GoldenHeart {
   display: block;
   margin: 0 auto;
+  max-width: 100%;
   position: relative;
   top: 50%;
   transform: translateY(-50%);
