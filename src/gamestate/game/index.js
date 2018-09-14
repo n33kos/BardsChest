@@ -119,7 +119,8 @@ export default class {
       this.ctx.translate(this.cx, this.cy);
       this.ctx.rotate(-this.rotation);
       this.ctx.drawImage(this.images.center.image, -this.radius/2, -this.radius/2, this.radius, this.radius);
-      this.ctx.resetTransform();
+      this.ctx.rotate(this.rotation);
+      this.ctx.translate(-this.cx, -this.cy);
     }
 
     if (this.images.centerGlow.image !== null && this.glowAlpha > 0.01) {
@@ -128,7 +129,8 @@ export default class {
       this.ctx.translate(this.cx, this.cy);
       this.ctx.rotate(-this.rotation);
       this.ctx.drawImage(this.images.centerGlow.image, -this.radius/2, -this.radius/2, this.radius, this.radius);
-      this.ctx.resetTransform();
+      this.ctx.rotate(this.rotation);
+      this.ctx.translate(-this.cx, -this.cy);
       this.ctx.globalAlpha = 1;
     }
   }
@@ -229,7 +231,8 @@ export default class {
   }
 
   initAudio() {
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const AC = window.AudioContext || window.webkitAudioContext;
+    const audioContext = new AC();
     this.audioContext = audioContext;
 
     const master = audioContext.createGain();

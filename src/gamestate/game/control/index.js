@@ -1,4 +1,4 @@
-import { debounce } from 'throttle-debounce';
+import { throttle } from 'throttle-debounce';
 
 export default class {
   constructor(Game) {
@@ -13,7 +13,7 @@ export default class {
 
   init() {
     // Mouse
-    const debouncedMouseMove = debounce(this.debounceValue, (e) => this.handleMouseMove(e));
+    const debouncedMouseMove = throttle(this.debounceValue, (e) => this.handleMouseMove(e));
     document.addEventListener("mousemove", debouncedMouseMove);
     document.addEventListener("mousedown", e => {
       this.isMouseDown = true;
@@ -23,7 +23,7 @@ export default class {
     document.addEventListener("mouseup", e => { this.isMouseDown = false; });
 
     // Touch
-    const debouncedTouchMove = debounce(this.debounceValue, (e) => this.handleTouchMove(e));
+    const debouncedTouchMove = throttle(this.debounceValue, (e) => this.handleTouchMove(e));
     document.addEventListener('touchmove', debouncedTouchMove);
     document.addEventListener('touchstart', e => {
       this.isMouseDown = true;
