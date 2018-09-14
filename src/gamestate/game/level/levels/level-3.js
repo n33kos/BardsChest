@@ -144,6 +144,73 @@ export default args => {
     }),
   ];
 
+  const noteTriggersAllAround = [
+    new NoteTrigger({
+      beats          : 32,
+      bpm            : level.bpm,
+      masterAudioNode: level.masterAudioNode,
+      position       : 0,
+      radius         : level.radius,
+      startDelay     : 0,
+    }),
+    new NoteTrigger({
+      beats          : 32,
+      bpm            : level.bpm,
+      masterAudioNode: level.masterAudioNode,
+      position       : Math.PI*0.5,
+      radius         : level.radius,
+      startDelay     : 4,
+    }),
+    new NoteTrigger({
+      beats          : 32,
+      bpm            : level.bpm,
+      masterAudioNode: level.masterAudioNode,
+      position       : Math.PI,
+      radius         : level.radius,
+      startDelay     : 8,
+    }),
+    new NoteTrigger({
+      beats          : 32,
+      bpm            : level.bpm,
+      masterAudioNode: level.masterAudioNode,
+      position       : -Math.PI*0.5,
+      radius         : level.radius,
+      startDelay     : 12,
+    }),
+    new NoteTrigger({
+      beats          : 32,
+      bpm            : level.bpm,
+      masterAudioNode: level.masterAudioNode,
+      position       : 0,
+      radius         : level.radius,
+      startDelay     : 16,
+    }),
+    new NoteTrigger({
+      beats          : 32,
+      bpm            : level.bpm,
+      masterAudioNode: level.masterAudioNode,
+      position       : Math.PI*0.5,
+      radius         : level.radius,
+      startDelay     : 20,
+    }),
+    new NoteTrigger({
+      beats          : 32,
+      bpm            : level.bpm,
+      masterAudioNode: level.masterAudioNode,
+      position       : Math.PI,
+      radius         : level.radius,
+      startDelay     : 24,
+    }),
+    new NoteTrigger({
+      beats          : 32,
+      bpm            : level.bpm,
+      masterAudioNode: level.masterAudioNode,
+      position       : -Math.PI*0.5,
+      radius         : level.radius,
+      startDelay     : 28,
+    }),
+  ];
+
   level.sections = [
     // Lead-in Section
     new Section({
@@ -174,7 +241,7 @@ export default args => {
       unlockPattern : [0, 1, 2, 3],
       url : 'level-3/bg-1.mp3',
       notes,
-      noteTriggers,
+      noteTriggers : noteTriggersAllAround,
     }),
     new Section({
       audioContext : level.audioContext,

@@ -231,8 +231,7 @@ export default class {
   }
 
   initAudio() {
-    const AC = window.AudioContext || window.webkitAudioContext;
-    const audioContext = new AC();
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
     this.audioContext = audioContext;
 
     const master = audioContext.createGain();
