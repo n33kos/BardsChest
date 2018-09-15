@@ -160,7 +160,6 @@ export default class {
   }
 
   endlevel() {
-    console.log('level ended!');
     this.section.audioNode.stop();
 
     this.section = null;
@@ -346,6 +345,7 @@ export default class {
       );
       this.sectionProgress = mergeData.sectionProgress;
       this.GameState.score = Math.max(0, this.GameState.score + mergeData.score * this.level.difficulty);
+      this.GameState.UI.updateScoreAdd(mergeData.score * this.level.difficulty);
     });
     this.GameState.UI.updateScore(this.GameState.score);
 

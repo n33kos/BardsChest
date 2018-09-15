@@ -154,7 +154,7 @@ export default class {
   updateIndicators(unlockPattern, sectionKey, notes) {
     const indicators = document.querySelector('.Indicators');
     const length = unlockPattern.length;
-    indicators.innerHTML = null;
+    indicators.innerHTML = '';
 
     unlockPattern.forEach((noteIndex, index) => {
       const div = document.createElement('div');
@@ -167,5 +167,20 @@ export default class {
 
       indicators.appendChild(div);
     });
+  }
+
+  updateScoreAdd(amount) {
+    if (amount !== 0) {
+      const scores = document.querySelectorAll('[data-score-addition]');
+      Array.from(scores).forEach(scoreElement => {
+        scoreElement.classList.remove('negative');
+        scoreElement.innerHTML = amount;
+        scoreElement.classList.add('active');
+        if (amount < 0) scoreElement.classList.add('negative');
+        setTimeout(() => {
+          scoreElement.classList.remove('active');
+        }, 100);
+      });
+    }
   }
 }

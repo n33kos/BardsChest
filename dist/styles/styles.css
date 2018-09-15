@@ -14,7 +14,7 @@ body {
       image-rendering: -moz-crisp-edges;
       image-rendering: pixelated;
   margin: 0;
-  overflow: auto;
+  overflow: hidden;
   padding: 0;
   position: absolute;
   width: 100%;
@@ -76,7 +76,8 @@ canvas {
   height: 100vh;
   left: 0;
   opacity: 0;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   position: fixed;
   top: 0;
   -webkit-transform: translateY(-100%);
@@ -91,6 +92,10 @@ canvas {
   opacity: 1;
   -webkit-transform: translateX(0);
           transform: translateX(0);
+}
+
+.Screen button {
+  margin: 30px auto;
 }
 
 .Screen[data-screen="mainmenu"] .IconButton,
@@ -116,6 +121,12 @@ canvas {
   width: 200px;
   margin: 0 auto;
   margin-top: 30px;
+  width: calc(100% - 60px);
+  max-width: 320px;
+}
+
+.Screen[data-screen="about"] > nav {
+  max-width: 600px;
 }
 
 .DetailsCard {
@@ -152,6 +163,16 @@ canvas {
   right: 10px;
   top: 8px;
   width: 110px;
+}
+
+.Screen[data-screen="game"] .Score {
+  position:  fixed;
+  top: 10px;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
+  color: #fff5bf;
+  font-size: 30px;
 }
 
 .Screen[data-screen="score"] {
@@ -275,44 +296,9 @@ canvas {
   width: 48px;
 }
 
-.IconButton {
-  background-color: none;
-  background-color: transparent;
-  background-image: url('../img/pause.png');
-  background-position: center center;
-  background-size: contain;
-  border: none;
-  cursor: pointer;
-  height: 32px;
-  width: 32px;
-  outline: 0;
-}
-
-.IconButton[data-nav="pause"]{
-  background-image: url('../img/pause.png');
-}
-
-.IconButton[data-nav="fullscreen"]{
-  background-image: url('../img/fullscreen.png');
-}
-
-.IconButton[data-nav="restart"]{
-  background-image: url('../img/restart.png');
-}
-
-.IconButton[data-nav="play"],
-.IconButton.LevelDown {
-  background-image: url('../img/reverse.png');
-}
-
-.IconButton[data-nav="reverse"],
-.IconButton.LevelUp {
-  background-image: url('../img/play.png');
-}
-
 .GameInfo {
   color: white;
-  font-size: 26px;
+  font-size: 22px;
   margin: 0 auto;
   padding: 30px;
   width: 600px;
@@ -338,8 +324,7 @@ canvas {
   align-items: center;
   display: flex;
   justify-content: center;
-  margin: 0 auto;
-  margin-top: 30px;
+  margin: 60px auto 0;
   max-width: 420px;
   width: 100%;
 }
@@ -355,8 +340,9 @@ canvas {
   align-items: center;
   display: flex;
   justify-content: center;
-  margin: 0 auto;
+  margin: 30px auto;
   max-width: 420px;
+  position: relative;
   width: 100%;
 }
 
@@ -379,4 +365,96 @@ canvas {
 .LevelDifficulty.difficulty-4 .Star:not(:nth-child(5)),
 .LevelDifficulty.difficulty-5 .Star {
   opacity: 1;
+}
+
+.Screen[data-screen="level"] > nav .GameInfo {
+  font-size: 20px;
+  margin-bottom: 25px;
+  text-align: center;
+  line-height: 1.25;
+  color: #dcd3a5;
+  padding: 0;
+  width: auto;
+}
+
+.Screen[data-screen="level"] > nav button {
+  margin: 30px auto;
+}
+
+.Screen[data-screen="level"] h3 {
+  text-align: center;
+  margin: 0;
+  width: 100%;
+  position: absolute;
+  top: -20px;
+}
+
+.AddScore {
+  width: 100%;
+  text-align: center;
+  color: white;
+  position: fixed;
+  font-size: 30px;
+  top: 50%;
+  transition: opacity 1s ease, -webkit-transform 1s ease;
+  transition: opacity 1s ease, transform 1s ease;
+  transition: opacity 1s ease, transform 1s ease, -webkit-transform 1s ease;
+  opacity: 0;
+  -webkit-transform: translateY(-100%);
+          transform: translateY(-100%);
+  z-index: 5;
+}
+
+.AddScore.active {
+  opacity: 1;
+  transition: none;
+  -webkit-transform: translateY(0);
+          transform: translateY(0);
+}
+
+.AddScore.active.negative {
+  -webkit-transform: translateY(0);
+          transform: translateY(0);
+}
+
+.AddScore.negative {
+  color: red;
+  -webkit-transform: translateY(100%);
+          transform: translateY(100%);
+}
+
+.IconButton {
+  background-color: none;
+  background-color: transparent;
+  background-image: url('../img/pause.png');
+  background-position: center center;
+  background-size: contain;
+  border: none;
+  cursor: pointer;
+  margin: 0!important;
+  height: 32px;
+  width: 32px;
+  outline: 0;
+}
+
+.IconButton[data-nav="pause"]{
+  background-image: url('../img/pause.png');
+}
+
+.IconButton[data-nav="fullscreen"]{
+  background-image: url('../img/fullscreen.png');
+}
+
+.IconButton[data-nav="restart"]{
+  background-image: url('../img/restart.png');
+}
+
+.IconButton[data-nav="play"],
+.IconButton.LevelDown {
+  background-image: url('../img/reverse.png');
+}
+
+.IconButton[data-nav="reverse"],
+.IconButton.LevelUp {
+  background-image: url('../img/play.png');
 }
