@@ -34,8 +34,8 @@ export default class {
     this.isRunning = false;
     this.isFirstBeat = true;
     this.images = {
-      center: {url : `${window.location.href}img/center.png`, image: null},
-      centerGlow: {url : `${window.location.href}img/centerGlow.png`, image: null},
+      center: {url : `./img/center.png`, image: null},
+      centerGlow: {url : `./img/centerGlow.png`, image: null},
     };
 
     this.setDimensions();

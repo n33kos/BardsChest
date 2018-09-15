@@ -198,7 +198,7 @@ export default args => {
       unlockPattern : [1, 0, 2, 3],
       url : 'level-1/bg-3.mp3',
       notes,
-      noteTriggers,
+      noteTriggers : noteTriggersDoubleTime,
     }),
     new Section({
       audioContext : level.audioContext,

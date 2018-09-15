@@ -5,7 +5,7 @@ export default class {
     masterAudioNode,
   }) {
     this.audioContext = audioContext;
-    this.audioFileUrl = `${window.location.href}audio/${audioFileUrl}`;
+    this.audioFileUrl = `./audio/${audioFileUrl}`;
     this.audioNode = null;
     this.buffer = null;
     this.masterAudioNode = masterAudioNode;
