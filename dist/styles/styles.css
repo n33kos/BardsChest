@@ -279,21 +279,21 @@ canvas {
 .Indicator {
   background-color: #222;
   border-radius: 50%;
-  height: 48px;
+  height: 40px;
   margin: 0 10px;
   position: relative;
-  width: 48px;
+  width: 40px;
 }
 
 .Indicator:after {
   background-image: url('../img/indicator.png');
   background-size: cover;
   content: '';
-  height: 48px;
+  height: 40px;
   left: 0;
   position: absolute;
   top: 0;
-  width: 48px;
+  width: 40px;
 }
 
 .GameInfo {
