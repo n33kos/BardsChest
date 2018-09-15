@@ -44,9 +44,6 @@
           <h3>Difficulty:</h3>
         </div>
         <nav>
-          <div class="GameInfo">
-            Greetings traveler! You have stumbled upon the wreckage of a caravan plundered by savages. Nearby the body of a wealthy looking bard you find a chest but there is no key in sight. Perhaps there is another way to get the treasure within...
-          </div>
           <button class="WoodButton" data-nav="play" data-target-screen="game" data-gamestate-play>Play</button>
           <button class="WoodButton" data-target-screen="mainmenu">Back</button>
         </nav>
@@ -55,6 +52,14 @@
       <div class="Screen" data-screen="about">
         <button class="IconButton" data-nav="fullscreen"></button>
         <nav>
+          <div class="GameInfo">
+            Greetings traveler! You have stumbled upon the wreckage of a caravan plundered by savages. Nearby the body of a wealthy looking bard you find a chest but there is no key in sight. Perhaps there is another way to get the treasure within...
+            <ul>
+              <li>Use the left and right arrow keys or drag with the mouse/touch to rotate the lock</li>
+              <li>Catch sound waves in the right sequence to unlock the chest</li>
+              <li>Playing an incorrect note removes one note from the unlock sequence</li>
+            </ul>
+          </div>
           <div class="GameInfo">
             Bard's Chest is A Web Audio API game made for the <a href="https://itch.io/jam/musicgamejam2018" target="_blank">2018 itch.io music jam</a>.
             <br><br>
