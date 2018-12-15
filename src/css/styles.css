@@ -18,6 +18,11 @@ body {
   width: 100%;
 }
 
+h1 {
+  margin: 0 auto;
+  max-width: 270px;
+}
+
 canvas {
   display: block;
   height: 100vh;
@@ -115,8 +120,7 @@ canvas {
   width: 200px;
   margin: 0 auto;
   margin-top: 30px;
-  width: calc(100% - 60px);
-  max-width: 320px;
+  width: 230px;
 }
 
 .Screen[data-screen="about"] > nav {
@@ -288,6 +292,7 @@ canvas {
 
 .GameInfo a {
   color: #fff5bf;
+  word-break: break-word;
 }
 
 .GameInfo ul li {

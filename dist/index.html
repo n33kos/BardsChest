@@ -15,8 +15,7 @@
     <script src="./js/bardschest.min.js"></script>
 
     <!-- Blur integration script -->
-    <!-- <script type="text/javascript" src="../games.js"></script> -->
-    <script type="text/javascript" src="./games.js"></script>
+    <script type="text/javascript" src="../games.js"></script>
   </head>
 
   <body>
@@ -25,7 +24,6 @@
         <h1>
           <img src="./img/logo.png" class="logo" alt="Bard's Chest">
         </h1>
-        <button class="IconButton" data-nav="fullscreen"></button>
         <nav>
           <button class="WoodButton" data-nav="play" data-target-screen="game" data-gamestate-play>Play</button>
           <button class="WoodButton" data-nav="about" data-target-screen="about">About</button>
@@ -33,7 +31,6 @@
       </div>
 
       <div class="Screen" data-screen="level">
-        <button class="IconButton" data-nav="fullscreen"></button>
         <div class="LevelSelect">
           <button class="IconButton LevelDown" data-gamestate-change-level="-1"></button>
           <div class="Level" data-ui="level">Brave The Storm</div>
@@ -54,7 +51,6 @@
       </div>
 
       <div class="Screen" data-screen="about">
-        <button class="IconButton" data-nav="fullscreen"></button>
         <nav>
           <div class="GameInfo">
             Greetings traveler! You have stumbled upon the wreckage of a caravan plundered by savages. Nearby the body of a wealthy looking bard you find a chest but there is no key in sight. Perhaps there is another way to get the treasure within...
@@ -85,13 +81,12 @@
 
       <div class="Screen" data-screen="game">
         <div class="Score" data-ui="score"></div>
-        <div class="DetailsCard">
+        <div class="DetailsCard" style="display: none;">
           <div class="Level"><span data-ui="level">Brave The Storm</span></div>
           <div class="BPM">BPM: <span data-ui="bpm">100</span></div>
         </div>
-        <nav>
+        <nav style="display: none;">
           <button class="IconButton" data-nav="pause" data-gamestate-pause></button>
-          <button class="IconButton" data-nav="fullscreen"></button>
           <button class="IconButton" data-nav="restart" data-gamestate-restart></button>
         </nav>
       </div>
@@ -99,7 +94,6 @@
       <div class="Screen" data-screen="score">
         <img src="./img/GoldenHeart.gif" class="GoldenHeart">
         <span class="Score" data-ui="score">0</span>
-        <button class="IconButton" data-nav="fullscreen"></button>
         <nav>
           <button class="WoodButton" data-target-screen="mainmenu">Menu</button>
         </nav>
