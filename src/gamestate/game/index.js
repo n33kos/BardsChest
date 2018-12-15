@@ -4,9 +4,7 @@ import defer                 from '../../utils/defer';
 import oneBeatInMilliseconds from '../../utils/oneBeatInMilliseconds';
 import { throttle }          from 'throttle-debounce';
 
-import Level1                from './level/levels/level-1';
 import Level2                from './level/levels/level-2';
-import Level3                from './level/levels/level-3';
 
 export default class {
   constructor(GameState) {
@@ -140,12 +138,23 @@ export default class {
   }
 
   winCondition() {
-    if (this.levelProgress >= this.level.sections.length) {
+    if (
+      this.levelProgress >= this.level.sections.length
+      || this.GameState.score >= 1000
+    ) {
       this.endlevel();
       this.GameState.UI.setScreen('score');
-
+      texta_win();
       return true;
     }
+
+    if (this.GameState.score <= 0) {
+      this.endlevel();
+      this.GameState.UI.setScreen('score');
+      texta_close();
+      return true;
+    }
+
     return false;
   }
 
@@ -180,7 +189,7 @@ export default class {
   // --------------------Inits----------------
   importLevels() {
     this.levels.push(
-      Level1({
+      Level2({
         audioContext    : this.audioContext,
         GameState       : this.GameState,
         masterAudioNode : this.masterAudioNode,
@@ -192,7 +201,7 @@ export default class {
         masterAudioNode : this.masterAudioNode,
         radius          : this.radius,
       }),
-      Level3({
+      Level2({
         audioContext    : this.audioContext,
         GameState       : this.GameState,
         masterAudioNode : this.masterAudioNode,
